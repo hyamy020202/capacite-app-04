@@ -222,6 +222,45 @@ export default function TDP() {
     ["Total", totalGroupes, totalApprenants, totalGroupes + totalApprenants]
   ];
 
+  // ---------------------- تعريف resultatsData ----------------------
+  const resultatsData = {
+    totalHeuresTheo,
+    totalHeuresPrat,
+    totalHeuresTpSpec,
+    totalHeuresTp2,
+    totalHeuresTp3,
+    besoinTheoTotal: repartition.besoinTheoTotal,
+    besoinPratTotal: repartition.besoinPratTotal,
+    besoinTpSpecTotal: repartition.besoinTpSpecTotal,
+    besoinTp2Total: repartition.besoinTp2Total,
+    besoinTp3Total: repartition.besoinTp3Total,
+    moyenneBesoinTheo: repartition.moyenneTheo,
+    moyenneBesoinPrat: repartition.moyennePrat,
+    moyenneBesoinTpSpec: repartition.moyenneTpSpec,
+    moyenneSurfaceTheo,
+    moyenneSurfacePrat,
+    moyenneSurfaceTpSpec,
+    moyenneSurfaceTp2,
+    moyenneSurfaceTp3,
+    heuresRestantesTheo,
+    heuresRestantesPrat,
+    heuresRestantesTpSpec,
+    heuresRestantesTp2,
+    heuresRestantesTp3,
+    apprenantsPossiblesTheo,
+    apprenantsPossiblesPrat,
+    apprenantsPossiblesTpSpec,
+    apprenantsPossiblesTp2,
+    apprenantsPossiblesTp3,
+    etatTheo,
+    etatPrat,
+    etatTpSpec,
+    etatTp2,
+    etatTp3,
+    testGlobal
+  };
+  // -----------------------------------------------------------------
+
   const handleEffectifChange = (rows) => {
     if (!rows || rows.length === 0) {
       setEffectif([{ specialite: "", groupes: 0, groupesAjout: 0, apprenants: 0 }]);
