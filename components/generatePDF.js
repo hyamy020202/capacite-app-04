@@ -203,32 +203,26 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
         const isExcedent = globalRow[1] === 'Excédent';
         const bgColor = isExcedent ? [39, 174, 96] : [231, 76, 60];
 
-        // استخراج النسب مع العلامة
+        // استخراج كل النسب من الجدول (بدون Résultat Global) وتحويلها لأرقام (مع العلامة)
         const percents = rowsSansGlobal
           .map(row => row[2])
           .filter(p => typeof p === 'string' && /^[+-]?\d+(\.\d+)?%$/.test(p))
-          .map(p => ({ raw: p, value: parseFloat(p) }));
+          .map(p => ({ raw: p, abs: Math.abs(parseFloat(p)) }));
 
         let selectedPercent = '';
-        if (isExcedent) {
-          // في حالة الفائض: أقل نسبة موجبة فقط (>0)
-          const positives = percents.filter(p => p.value > 0);
-          if (positives.length) {
-            selectedPercent = positives.reduce((min, p) => p.value < min.value ? p : min, positives[0]).raw;
+        if (percents.length) {
+          if (isExcedent) {
+            // في حالة الفائض: الأقرب للصفر (أصغر قيمة مطلقة)
+            selectedPercent = percents.reduce((min, p) => p.abs < min.abs ? p : min, percents[0]).raw;
+          } else {
+            // في حالة التجاوز/العجز: الأبعد عن الصفر (أكبر قيمة مطلقة)
+            selectedPercent = percents.reduce((max, p) => p.abs > max.abs ? p : max, percents[0]).raw;
           }
-        } else {
-          // في حالة التجاوز/العجز: أبعد نسبة سالبة عن الصفر (أصغر رقم)
-          const negatives = percents.filter(p => p.value < 0);
-          if (negatives.length) {
-            selectedPercent = negatives.reduce((min, p) => p.value < min.value ? p : min, negatives[0]).raw;
-          }
-        }
-        // إذا لم نجد النسبة المطلوبة، استعمل نسبة Résultat Global الأصلية (بدون علامة)
-        if (!selectedPercent) {
-          selectedPercent = globalRow[2] ? globalRow[2].replace(/^[+-]/, "") : '';
-        } else {
-          // احذف العلامة وأبق النسبة مع الأقواس فقط
+          // أزل العلامة ليظهر الرقم قيمة مطلقة فقط
           selectedPercent = selectedPercent.replace(/^[+-]/, "");
+        } else {
+          // fallback على نسبة Résultat Global الأصلية (بدون علامة)
+          selectedPercent = globalRow[2] ? globalRow[2].replace(/^[+-]/, "") : '';
         }
 
         const resultText = `${globalRow[1]}${selectedPercent ? ` (${selectedPercent})` : ""}`;
