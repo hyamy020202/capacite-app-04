@@ -159,7 +159,7 @@ export default function TableauSalles({
     });
   };
 
-  const heuresOptions = [40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60];
+  const heuresOptions = [20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60];
   const cnoOptions = Array.from({ length: 21 }, (_, i) => +(1 + i * 0.1));
   const semainesOptions = Array.from({ length: 100 }, (_, i) => i + 1);
   const apprenantsOptions = Array.from({ length: 21 }, (_, i) => 10 + i);
@@ -275,7 +275,7 @@ export default function TableauSalles({
                   </tbody>
                   <tfoot>
                     <tr className="font-bold bg-gray-100">
-                      <td colSpan={2}>Moy/Sum</td>
+                      <td colSpan={2}>Moy/Σ</td>
                       <td>{moyenneSurfaceP}</td>
                       <td>{totalHeuresMax}</td>
                     </tr>

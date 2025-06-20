@@ -208,7 +208,7 @@ export default function TDA() {
   const resultatsRows = [];
   if (moyenneSurfaceTheo > 0)
     resultatsRows.push([
-      "Théorique",
+      "Théorie",
       isNaN(heuresRestantesTheo) ? 0 : heuresRestantesTheo,
       isNaN(apprenantsPossiblesTheo) ? 0 : apprenantsPossiblesTheo,
       etatTheo,
@@ -216,7 +216,7 @@ export default function TDA() {
     ]);
   if (moyenneSurfacePrat > 0)
     resultatsRows.push([
-      "Pratique",
+      "Info",
       isNaN(heuresRestantesPrat) ? 0 : heuresRestantesPrat,
       isNaN(apprenantsPossiblesPrat) ? 0 : apprenantsPossiblesPrat,
       etatPrat,
@@ -224,7 +224,7 @@ export default function TDA() {
     ]);
   if (moyenneSurfaceTpSpec > 0)
     resultatsRows.push([
-      "TP Spécifiques",
+      "TP1",
       isNaN(heuresRestantesTpSpec) ? 0 : heuresRestantesTpSpec,
       isNaN(apprenantsPossiblesTpSpec) ? 0 : apprenantsPossiblesTpSpec,
       etatTpSpec,
@@ -258,8 +258,8 @@ export default function TDA() {
 
   const sallesSummaryRaw = [
     ["Théorie", salles.theorie.length, moyenneSurfaceTheo.toFixed(2), totalHeuresTheo],
-    ["Pratique", salles.pratique.length, moyenneSurfacePrat.toFixed(2), totalHeuresPrat],
-    ["TP Spécifiques", salles.tpSpecifiques.length, moyenneSurfaceTpSpec.toFixed(2), totalHeuresTpSpec],
+    ["Info", salles.pratique.length, moyenneSurfacePrat.toFixed(2), totalHeuresPrat],
+    ["TP1", salles.tpSpecifiques.length, moyenneSurfaceTpSpec.toFixed(2), totalHeuresTpSpec],
     ["TP2", salles.tp2.length, moyenneSurfaceTp2.toFixed(2), totalHeuresTp2],
     ["TP3", salles.tp3.length, moyenneSurfaceTp3.toFixed(2), totalHeuresTp3],
   ];

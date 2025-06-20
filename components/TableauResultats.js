@@ -65,7 +65,7 @@ export default function TableauResultats({ data, titre }) {
   const rows = [];
   if (moyenneSurfaceTheo > 0) {
     rows.push({
-      label: "Théorique",
+      label: "Théorie",
       heures: isNaN(heuresRestantesTheo) ? 0 : heuresRestantesTheo,
       apprenants: isNaN(apprenantsPossiblesTheo) ? 0 : apprenantsPossiblesTheo,
       etat: etatTheo,
@@ -73,7 +73,7 @@ export default function TableauResultats({ data, titre }) {
   }
   if (moyenneSurfacePrat > 0) {
     rows.push({
-      label: "Pratique",
+      label: "Info",
       heures: isNaN(heuresRestantesPrat) ? 0 : heuresRestantesPrat,
       apprenants: isNaN(apprenantsPossiblesPrat) ? 0 : apprenantsPossiblesPrat,
       etat: etatPrat,
@@ -81,7 +81,7 @@ export default function TableauResultats({ data, titre }) {
   }
   if (moyenneSurfaceTpSpec > 0) {
     rows.push({
-      label: "TP Spécifique",
+      label: "TP1",
       heures: isNaN(heuresRestantesTpSpec) ? 0 : heuresRestantesTpSpec,
       apprenants: isNaN(apprenantsPossiblesTpSpec) ? 0 : apprenantsPossiblesTpSpec,
       etat: etatTpSpec,
