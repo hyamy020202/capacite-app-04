@@ -9,8 +9,8 @@ import {
 // أضف TP2 وTP3
 const salleTitles = [
   { key: "theorie", label: "Salles Théorie" },
-  { key: "pratique", label: "Salles Info" },           // تم التغيير هنا
-  { key: "tpSpecifiques", label: "Salles TP1" },      // تم التغيير هنا
+  { key: "pratique", label: "Salles Info" },
+  { key: "tpSpecifiques", label: "Salles TP1" },
   { key: "tp2", label: "Salles TP2" },
   { key: "tp3", label: "Salles TP3" },
 ];
@@ -175,7 +175,7 @@ export default function TableauSalles({
   return (
     <div className="flex flex-col items-center w-full">
       {/* قائمة اختيار الجداول */}
-      <div className="flex flex-wrap gap-4 mb-4 items-center justify-center">
+      <div className="flex flex-wrap gap-3 mb-3 items-center justify-center">
         {salleTitles.map(({ key, label }) => (
           <label key={key} className="flex items-center gap-1 text-xs">
             <input
@@ -189,7 +189,7 @@ export default function TableauSalles({
         ))}
       </div>
       {/* عرض الجداول المختارة فقط */}
-      <div className="flex flex-wrap justify-center gap-6 w-full">
+      <div className="flex flex-wrap justify-center gap-3 w-full">
         {salleTitles.filter(({ key }) => visibleTables[key]).map(({ key, label }) => {
           const sallesType = salles[key] && salles[key].length > 0
             ? salles[key]
@@ -197,20 +197,20 @@ export default function TableauSalles({
           const totalHeuresMax = sommeColonne(sallesType.map(s => Number(s.heuresMax) || 0));
           const moyenneSurfaceP = moyenneColonne(sallesType.map(s => Number(s.surfaceP) || 0));
           return (
-            <div className="bg-white shadow rounded-2xl p-4 mb-8 max-w-md w-full sm:w-[370px] flex-shrink-0" key={key}>
-              <h2 className="text-xl font-bold text-gray-700 mb-4 text-center">{label}</h2>
-              <div className="mb-2 flex flex-col items-center">
-                <div className="flex gap-2 mb-1 justify-center">
-                  <span className="text-xs w-16 text-center">CNO</span>
-                  <span className="text-xs w-16 text-center">Semaines</span>
-                  <span className="text-xs w-16 text-center">Heures</span>
-                  <span className="text-xs w-20 text-center">Apprenants</span>
+            <div className="bg-white shadow rounded-xl p-2 mb-3 max-w-xs w-full sm:w-[260px] flex-shrink-0" key={key}>
+              <h2 className="compact-title table-title text-center mb-2">{label}</h2>
+              <div className="mb-1 flex flex-col items-center">
+                <div className="flex gap-1 mb-1 justify-center">
+                  <span className="text-xs w-12 text-center">CNO</span>
+                  <span className="text-xs w-12 text-center">Sem.</span>
+                  <span className="text-xs w-12 text-center">Heures</span>
+                  <span className="text-xs w-14 text-center">Appr.</span>
                 </div>
-                <div className="flex gap-2 justify-center">
+                <div className="flex gap-1 justify-center">
                   <select
                     value={cnos[key]}
                     onChange={e => updateCno(key, Number(e.target.value))}
-                    className="text-xs px-2 py-1 h-7 border rounded w-16 text-center"
+                    className="text-xs px-1 py-1 h-6 border rounded w-12 text-center"
                   >
                     {cnoOptions.map(opt => (
                       <option key={opt} value={opt}>{opt.toFixed(1)}</option>
@@ -219,7 +219,7 @@ export default function TableauSalles({
                   <select
                     value={semaines[key]}
                     onChange={e => updateSemaines(key, Number(e.target.value))}
-                    className="text-xs px-2 py-1 h-7 border rounded w-16 text-center"
+                    className="text-xs px-1 py-1 h-6 border rounded w-12 text-center"
                   >
                     {semainesOptions.map(opt => (
                       <option key={opt} value={opt}>{opt}</option>
@@ -228,7 +228,7 @@ export default function TableauSalles({
                   <select
                     value={heures[key]}
                     onChange={e => updateHeures(key, Number(e.target.value))}
-                    className="text-xs px-2 py-1 h-7 border rounded w-16 text-center"
+                    className="text-xs px-1 py-1 h-6 border rounded w-12 text-center"
                   >
                     {heuresOptions.map(opt => (
                       <option key={opt} value={opt}>{opt}</option>
@@ -237,7 +237,7 @@ export default function TableauSalles({
                   <select
                     value={apprenants[key]}
                     onChange={e => updateApprenants(key, Number(e.target.value))}
-                    className="text-xs px-2 py-1 h-7 border rounded w-20 text-center"
+                    className="text-xs px-1 py-1 h-6 border rounded w-14 text-center"
                   >
                     {apprenantsOptions.map(opt => (
                       <option key={opt} value={opt}>{opt}</option>
@@ -246,12 +246,12 @@ export default function TableauSalles({
                 </div>
               </div>
               <div className="table-responsive flex justify-center" style={{ width: "100%", overflowX: "auto" }}>
-                <table className="table-compact">
+                <table className="compact-table table-compact">
                   <thead>
                     <tr>
                       <th>Code</th>
                       <th>Surface<br />(m²)</th>
-                      <th>Surface<br />Pédagogique</th>
+                      <th>Surface<br />Pédag.</th>
                       <th>Heures<br />Max</th>
                     </tr>
                   </thead>
@@ -264,8 +264,8 @@ export default function TableauSalles({
                             type="number"
                             value={salle.surface}
                             onChange={e => handleChange(key, index, "surface", e.target.value)}
-                            className="w-16 p-1 border rounded"
-                            style={{ fontSize: "0.85rem" }}
+                            className="w-12 p-1 border rounded"
+                            style={{ fontSize: "0.8rem" }}
                           />
                         </td>
                         <td>{salle.surfaceP}</td>
@@ -275,23 +275,25 @@ export default function TableauSalles({
                   </tbody>
                   <tfoot>
                     <tr className="font-bold bg-gray-100">
-                      <td colSpan={2}>Moyenne / Somme</td>
+                      <td colSpan={2}>Moy/Sum</td>
                       <td>{moyenneSurfaceP}</td>
                       <td>{totalHeuresMax}</td>
                     </tr>
                   </tfoot>
                 </table>
               </div>
-              <div className="flex gap-4 mt-4 justify-center">
+              <div className="flex gap-2 mt-2 justify-center">
                 <button
-                  className="bg-blue-500 text-white rounded px-3 py-1"
+                  className="bg-blue-500 text-white rounded px-2 py-1 text-xs"
                   onClick={() => ajouterSalle(key)}
+                  style={{ minWidth: 0 }}
                 >
-                  Ajouter salle
+                  Ajouter
                 </button>
                 <button
-                  className="bg-gray-300 text-gray-700 rounded px-3 py-1"
+                  className="bg-gray-300 text-gray-700 rounded px-2 py-1 text-xs"
                   onClick={() => annulerModification(key)}
+                  style={{ minWidth: 0 }}
                 >
                   Annuler
                 </button>
