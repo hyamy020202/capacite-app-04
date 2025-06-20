@@ -324,12 +324,12 @@ export default function TDA() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-2 sm:p-4 md:p-6">
+    <div className="min-h-screen bg-gray-100 p-2 sm:p-3 md:p-4">
       <div ref={pdfRef}>
-        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-center text-gray-800 mb-6">
+        <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-center text-gray-800 mb-3">
           Diagnostic de l&apos;état actuel
         </h1>
-        <div className="flex flex-col lg:flex-row gap-6 flex-wrap mb-8">
+        <div className="flex flex-col lg:flex-row gap-4 flex-wrap mb-3">
           <TableauSalles
             salles={salles}
             setSalles={setSalles}
@@ -345,7 +345,7 @@ export default function TDA() {
         </div>
         <div className="tables-row">
           <TableauEffectif
-            titre="Effectif Actuel"
+            titre={<span className="table-title">Effectif Actuel</span>}
             specialties={specialties}
             modeActuel={true}
             onDataChange={handleEffectifChange}
@@ -353,37 +353,37 @@ export default function TDA() {
             salles={salles}
           />
           <TableauRepartition
-            titre="Répartition actuelle des heures"
+            titre={<span className="table-title">Répartition actuelle des heures</span>}
             effectifData={effectif}
             specialties={specialties}
             onDataChange={handleRepartitionChange}
             salles={salles}
           />
-          <TableauResultats titre="Résultat" data={resultatsData} salles={salles} />
+          <TableauResultats titre={<span className="table-title">Résultat</span>} data={resultatsData} salles={salles} />
         </div>
       </div>
-      <div className="flex flex-col md:flex-row flex-wrap justify-center gap-4 mt-10">
+      <div className="tight-buttons flex flex-col md:flex-row flex-wrap justify-center">
         <button
           onClick={() => window.location.href = "/"}
-          className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md shadow"
+          className="bg-blue-600 hover:bg-blue-700 text-white shadow"
         >
           ↩️ Page d&apos;accueil
         </button>
         <button
           onClick={() => generatePDF({ sallesSummary, apprenantsSummary, resultatsTable })}
-          className="w-full md:w-auto bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-md shadow"
+          className="bg-green-600 hover:bg-green-700 text-white shadow"
         >
           📄 Générer le PDF
         </button>
         <button
           onClick={handleSave}
-          className="w-full md:w-auto bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-3 rounded-md shadow"
+          className="bg-yellow-500 hover:bg-yellow-600 text-white shadow"
         >
           💾 Enregistrer les modifications
         </button>
         <button
           onClick={handleReset}
-          className="w-full md:w-auto bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-md shadow"
+          className="bg-red-600 hover:bg-red-700 text-white shadow"
         >
           🗑️ Réinitialiser
         </button>
