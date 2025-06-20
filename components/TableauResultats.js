@@ -105,10 +105,10 @@ export default function TableauResultats({ data, titre }) {
   }
 
   return (
-    <div className="bg-white shadow rounded-xl p-2 mb-3 min-w-[220px] max-w-xs">
-      <h2 className="compact-title table-title text-center mb-2">{titre || "Résultats"}</h2>
+    <div className="bg-white shadow rounded-2xl p-4 mb-8">
+      <h2 className="text-xl font-bold text-gray-700 mb-4 text-center">{titre || "Résultats"}</h2>
       <div className="table-responsive" style={{ width: "100%", overflowX: "auto" }}>
-        <table className="compact-table table-compact">
+        <table className="table-compact">
           <thead>
             <tr>
               <th>Type</th>
@@ -120,17 +120,17 @@ export default function TableauResultats({ data, titre }) {
           <tbody>
             {rows.map((row, i) => (
               <tr key={i}>
-                <td className="text-xs">{row.label}</td>
-                <td className="text-center text-xs">{row.heures}</td>
-                <td className="text-center text-xs">{row.apprenants}</td>
-                <td className={`text-center font-semibold text-xs ${row.etat === 'Excédent' ? 'text-green-600' : 'text-red-600'}`}>
+                <td style={{ fontSize: "0.85rem" }}>{row.label}</td>
+                <td className="text-center" style={{ fontSize: "0.85rem" }}>{row.heures}</td>
+                <td className="text-center" style={{ fontSize: "0.85rem" }}>{row.apprenants}</td>
+                <td className={`text-center font-semibold ${row.etat === 'Excédent' ? 'text-green-600' : 'text-red-600'}`} style={{ fontSize: "0.85rem" }}>
                   {row.etat}
                 </td>
               </tr>
             ))}
             <tr className="font-bold">
-              <td className="text-center text-xs" colSpan="3">Résultat Global</td>
-              <td className={`text-center text-xs ${couleurGlobal}`}>{testGlobal}</td>
+              <td className="text-center" colSpan="3" style={{ fontSize: "0.85rem" }}>Résultat Global</td>
+              <td className={`text-center ${couleurGlobal}`} style={{ fontSize: "0.85rem" }}>{testGlobal}</td>
             </tr>
           </tbody>
         </table>

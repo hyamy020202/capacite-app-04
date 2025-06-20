@@ -66,10 +66,10 @@ export default function TableauEffectifAjout({
   const totalApprenantsAll = totalApprenants + totalApprenantsAjout;
 
   return (
-    <div className="bg-white shadow rounded-xl p-2 mb-3 flex-1 min-w-[220px] max-w-xs">
-      <h2 className="compact-title table-title text-center mb-2">{titre}</h2>
+    <div className="bg-white shadow rounded-2xl p-4 mb-8 flex-1">
+      <h2 className="text-xl font-bold text-gray-700 mb-4 text-center">{titre}</h2>
       <div className="table-responsive" style={{ width: "100%", overflowX: "auto" }}>
-        <table className="compact-table table-compact">
+        <table className="table-compact">
           <thead>
             <tr>
               <th rowSpan={2}>Spécialité</th>
@@ -90,8 +90,8 @@ export default function TableauEffectifAjout({
                   <select
                     value={eff.specialite}
                     onChange={e => handleChange(idx, "specialite", e.target.value)}
-                    className="border rounded text-xs"
-                    style={{ fontSize: "0.8rem", minWidth: 80 }}
+                    className="border rounded"
+                    style={{ fontSize: "0.85rem", minWidth: 90 }}
                   >
                     <option value="">-- Choisir --</option>
                     {specialties.map(s => (
@@ -107,8 +107,8 @@ export default function TableauEffectifAjout({
                     min={0}
                     value={eff.groupes}
                     onChange={e => handleChange(idx, "groupes", e.target.value)}
-                    className="border rounded text-xs"
-                    style={{ fontSize: "0.8rem", width: 48 }}
+                    className="border rounded"
+                    style={{ fontSize: "0.85rem", width: 60 }}
                   />
                 </td>
                 <td>
@@ -117,8 +117,8 @@ export default function TableauEffectifAjout({
                     min={0}
                     value={eff.groupesAjout}
                     onChange={e => handleChange(idx, "groupesAjout", e.target.value)}
-                    className="border rounded text-xs"
-                    style={{ fontSize: "0.8rem", width: 48 }}
+                    className="border rounded"
+                    style={{ fontSize: "0.85rem", width: 60 }}
                   />
                 </td>
                 <td>
@@ -127,8 +127,8 @@ export default function TableauEffectifAjout({
                     min={0}
                     value={eff.apprenants}
                     onChange={e => handleChange(idx, "apprenants", e.target.value)}
-                    className="border rounded text-xs"
-                    style={{ fontSize: "0.8rem", width: 48 }}
+                    className="border rounded"
+                    style={{ fontSize: "0.85rem", width: 60 }}
                   />
                 </td>
                 <td className="bg-gray-50 text-center">
@@ -153,13 +153,13 @@ export default function TableauEffectifAjout({
           </tfoot>
         </table>
       </div>
-      <div className="flex gap-2 mt-2 justify-center">
+      <div className="flex gap-4 mt-4 justify-center">
         <button
           className="bg-blue-500 text-white rounded px-2 py-1 text-xs"
-          onClick={ajouterSpecialite}
+          onClick={ajouter}
           style={{ minWidth: 0 }}
         >
-          Ajouter spécialité
+          Ajouter
         </button>
         <button
           className="bg-gray-300 text-gray-700 rounded px-2 py-1 text-xs"

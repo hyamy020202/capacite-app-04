@@ -65,10 +65,10 @@ export default function TableauRepartitionAjout({ effectifData, specialties, onD
   ]);
 
   return (
-    <div className="bg-white shadow rounded-xl p-2 mb-3 min-w-[220px] max-w-xs">
-      <h2 className="compact-title table-title text-center mb-2">{titre || "Répartition"}</h2>
+    <div className="bg-white shadow rounded-2xl p-4 mb-8">
+      <h2 className="text-xl font-bold text-gray-700 mb-4 text-center">{titre || "Répartition"}</h2>
       <div className="table-responsive" style={{ width: "100%", overflowX: "auto" }}>
-        <table className="compact-table table-compact">
+        <table className="table-compact">
           <thead>
             <tr>
               <th>Spécialité</th>
@@ -91,24 +91,24 @@ export default function TableauRepartitionAjout({ effectifData, specialties, onD
 
               return (
                 <tr key={idx}>
-                  <td className="text-xs">{row.specialite || ""}</td>
-                  <td className="text-center text-xs">{besoinTheorie}</td>
-                  <td className="text-center text-xs">{besoinInfo}</td>
-                  <td className="text-center text-xs">{besoinTP1}</td>
-                  <td className="text-center text-xs">{besoinTP2}</td>
-                  <td className="text-center text-xs">{besoinTP3}</td>
+                  <td style={{ fontSize: "0.85rem" }}>{row.specialite || ""}</td>
+                  <td className="text-center" style={{ fontSize: "0.85rem" }}>{besoinTheorie}</td>
+                  <td className="text-center" style={{ fontSize: "0.85rem" }}>{besoinInfo}</td>
+                  <td className="text-center" style={{ fontSize: "0.85rem" }}>{besoinTP1}</td>
+                  <td className="text-center" style={{ fontSize: "0.85rem" }}>{besoinTP2}</td>
+                  <td className="text-center" style={{ fontSize: "0.85rem" }}>{besoinTP3}</td>
                 </tr>
               );
             })}
           </tbody>
           <tfoot>
             <tr>
-              <td className="font-bold text-right text-xs">Somme</td>
-              <td className="text-center font-bold text-xs">{sumBesoinTheorie}</td>
-              <td className="text-center font-bold text-xs">{sumBesoinInfo}</td>
-              <td className="text-center font-bold text-xs">{sumBesoinTP1}</td>
-              <td className="text-center font-bold text-xs">{sumBesoinTP2}</td>
-              <td className="text-center font-bold text-xs">{sumBesoinTP3}</td>
+              <td className="font-bold text-right" style={{ fontSize: "0.85rem" }}>Somme</td>
+              <td className="text-center font-bold" style={{ fontSize: "0.85rem" }}>{sumBesoinTheorie}</td>
+              <td className="text-center font-bold" style={{ fontSize: "0.85rem" }}>{sumBesoinInfo}</td>
+              <td className="text-center font-bold" style={{ fontSize: "0.85rem" }}>{sumBesoinTP1}</td>
+              <td className="text-center font-bold" style={{ fontSize: "0.85rem" }}>{sumBesoinTP2}</td>
+              <td className="text-center font-bold" style={{ fontSize: "0.85rem" }}>{sumBesoinTP3}</td>
             </tr>
           </tfoot>
         </table>
