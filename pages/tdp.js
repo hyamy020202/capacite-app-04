@@ -139,60 +139,7 @@ export default function TDP() {
   const percentTp2 = calculerPourcentageLigne(heuresRestantesTp2, totalHeuresTp2, etatTp2);
   const percentTp3 = calculerPourcentageLigne(heuresRestantesTp3, totalHeuresTp3, etatTp3);
 
-  // ---- التصحيح هنا ----
-  const percentValues = [percentTheo, percentPrat, percentTpSpec, percentTp2, percentTp3]
-    .filter(p => p && !isNaN(Number(p.replace('%','').replace('+','').replace('-',''))))
-    .map(p => Math.abs(Number(p.replace('%','').replace('+','').replace('-',''))));
-
-  let percentGlobal = "";
-  if (percentValues.length) {
-    let value;
-    if (testGlobal === "Excédent") {
-      value = Math.min(...percentValues);
-    } else {
-      value = Math.max(...percentValues);
-    }
-    percentGlobal = value + "%";
-  }
-  // ---- نهاية التصحيح ----
-
-  const resultatsData = {
-    totalHeuresTheo,
-    totalHeuresPrat,
-    totalHeuresTpSpec,
-    totalHeuresTp2,
-    totalHeuresTp3,
-    besoinTheoTotal: repartition.besoinTheoTotal,
-    besoinPratTotal: repartition.besoinPratTotal,
-    besoinTpSpecTotal: repartition.besoinTpSpecTotal,
-    besoinTp2Total: repartition.besoinTp2Total,
-    besoinTp3Total: repartition.besoinTp3Total,
-    moyenneBesoinTheo: repartition.moyenneTheo,
-    moyenneBesoinPrat: repartition.moyennePrat,
-    moyenneBesoinTpSpec: repartition.moyenneTpSpec,
-    moyenneSurfaceTheo,
-    moyenneSurfacePrat,
-    moyenneSurfaceTpSpec,
-    moyenneSurfaceTp2,
-    moyenneSurfaceTp3,
-    heuresRestantesTheo,
-    heuresRestantesPrat,
-    heuresRestantesTpSpec,
-    heuresRestantesTp2,
-    heuresRestantesTp3,
-    apprenantsPossiblesTheo,
-    apprenantsPossiblesPrat,
-    apprenantsPossiblesTpSpec,
-    apprenantsPossiblesTp2,
-    apprenantsPossiblesTp3,
-    etatTheo,
-    etatPrat,
-    etatTpSpec,
-    etatTp2,
-    etatTp3,
-    testGlobal
-  };
-
+  // حساب Résultat Global فقط للصفوف الظاهرة
   const resultatsRows = [];
   if (moyenneSurfaceTheo > 0)
     resultatsRows.push([
@@ -234,6 +181,21 @@ export default function TDP() {
       etatTp3,
       percentTp3
     ]);
+  // استخراج النسب فقط من الصفوف الظاهرة
+  const percentValues = resultatsRows
+    .filter(row => Array.isArray(row) && row.length >= 5 && typeof row[4] === "string" && row[4].includes("%"))
+    .map(row => Math.abs(Number(row[4].replace('%','').replace('+','').replace('-',''))));
+
+  let percentGlobal = "";
+  if (percentValues.length) {
+    let value;
+    if (testGlobal === "Excédent") {
+      value = Math.min(...percentValues);
+    } else {
+      value = Math.max(...percentValues);
+    }
+    percentGlobal = value + "%";
+  }
   resultatsRows.push([
     { value: "Résultat Global", colSpan: 3 },
     testGlobal,
