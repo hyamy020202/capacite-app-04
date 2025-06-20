@@ -202,6 +202,7 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
       if (globalRow) {
         const isExcedent = globalRow[1] === 'Excédent';
         const bgColor = isExcedent ? [39, 174, 96] : [231, 76, 60];
+        // نُبقي العلامة في الحسابات - وعند العرض نزيلها فقط
         const percent = globalRow[2] ? globalRow[2].replace(/^[+-]/, "") : '';
         const resultText = `${globalRow[1]}${percent ? ` (${percent})` : ""}`;
         const label = "Résultat Global :";
