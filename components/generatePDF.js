@@ -89,7 +89,6 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
 
     let tableStartY = currentY + 15;
 
-    // دالة لفحص هل هناك مساحة كافية على الصفحة للرسم قبل أن نبدأ الجدول (لكي لا ينقسم بداية الجدول)
     function hasSpaceForTable(requiredHeight) {
       return (pageHeight - tableStartY) >= requiredHeight;
     }
@@ -100,14 +99,13 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
       pdf.text('Synthèse des salles', 14, tableStartY);
       tableStartY += 4;
 
-      // حساب ارتفاع الجدول تقريبا
-      const rowsCount = sallesSummary.length + 1; // +1 للرأس
-      const approxRowHeight = 7; // تقديري لكل صف
+      const rowsCount = sallesSummary.length + 1;
+      const approxRowHeight = 7;
       const requiredHeight = rowsCount * approxRowHeight + 10;
 
       if (!hasSpaceForTable(requiredHeight)) {
         pdf.addPage();
-        tableStartY = 20; // بداية رسم جديد في صفحة جديدة
+        tableStartY = 20;
       }
 
       autoTable(pdf, {
@@ -193,7 +191,7 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
         headStyles: { fillColor: [155, 89, 182] },
         margin: { left: 14, right: 14 },
       });
-      tableStartY = pdf.lastAutoTable.finalY + 2; // تقليل المسافة بعد الجدول
+      tableStartY = pdf.lastAutoTable.finalY + 2;
 
       // --- Résultat Global مباشرة بعد الجدول ---
       const globalRow = resultatsTable.rows.find(
@@ -204,31 +202,34 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
         const bgColor = isExcedent ? [39, 174, 96] : [231, 76, 60];
 
         // استخراج النسب من جميع الصفوف ما عدا Résultat Global
-        const allPercents = rowsSansGlobal.map(row => row[2])
-          .filter(x => typeof x === 'string' && x.trim() !== '' && !isNaN(parseFloat(x)));
+        const allPercents = rowsSansGlobal
+          .map(row => row[2])
+          .filter(x => typeof x === 'string' && /^[+-]?\d+(\.\d+)?%$/.test(x));
 
-        // إيجاد الأقل بالقيمة الحقيقية (مع العلامة)
-        let minPercent = '';
+        let percent = '';
         if (allPercents.length) {
-          minPercent = allPercents.reduce((min, p) => parseFloat(p) < parseFloat(min) ? p : min, allPercents[0]);
+          // إيجاد الأقل بالقيمة الحقيقية (مع العلامة)
+          const minPercent = allPercents.reduce(
+            (min, p) => parseFloat(p) < parseFloat(min) ? p : min,
+            allPercents[0]
+          );
+          percent = minPercent.replace(/^[+-]/, "");
+        } else {
+          // إذا لم توجد نسب في كل الجدول اعتمد نسبة Résultat Global نفسه (إن وجدت)
+          percent = globalRow[2] && typeof globalRow[2] === 'string'
+            ? globalRow[2].replace(/^[+-]/, "")
+            : '';
         }
 
-        // عند العرض فقط، احذف العلامة
-        const percent = minPercent ? minPercent.replace(/^[+-]/, "") : '';
         const resultText = `${globalRow[1]}${percent ? ` (${percent})` : ""}`;
         const label = "Résultat Global :";
-        const pageWidth = pdf.internal.pageSize.getWidth();
-
         const fontSize = 9;
         pdf.setFontSize(fontSize);
         pdf.setFont("helvetica", "bold");
 
-        // حساب عرض كل خانة بدقة
         const w1 = pdf.getTextWidth(label) + 10;
         const w2 = pdf.getTextWidth(resultText) + 12;
         const tableWidth = w1 + w2;
-
-        // تصغير المسافة مع الجدول السابق
         const startY = tableStartY + 4;
 
         autoTable(pdf, {
@@ -239,7 +240,7 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
               { content: resultText, styles: { halign: 'center', fontStyle: 'bold', fontSize, cellWidth: w2, textColor: [255,255,255], fillColor: bgColor, lineWidth: 0 } }
             ]
           ],
-          theme: 'plain', // لا أطر
+          theme: 'plain',
           styles: {
             cellPadding: { top: 2, right: 4, bottom: 2, left: 4 },
             valign: 'middle',
@@ -247,9 +248,6 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
           },
           head: [],
           margin: { left: (pageWidth - tableWidth) / 2 },
-          didDrawCell: (data) => {
-            // لا شيء إضافي
-          }
         });
 
         tableStartY = pdf.lastAutoTable.finalY + 6;
