@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@media print {
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  button,
+  .no-print {
+    display: none !important;
+  }
+
+  html, body {
+    background: white;
+    color: black;
+  }
+}
+
+body {
+  font-family: 'Helvetica Neue', sans-serif;
+  background-color: #f9fafb;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border: 1px solid #d1d5db;
+  padding: 0.5rem;
+}
+
+/* جدول صغير واحترافي */
+.table-compact {
+  font-size: 0.85rem;
+  border-collapse: collapse;
+  width: auto;
+  margin: auto;
+  min-width: unset;
+  max-width: 100%;
+}
+
+.table-compact th,
+.table-compact td {
+  padding: 2px 8px;
+  border: 1px solid #e0e0e0;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.table-compact th {
+  background: #f3f4f6;
+  font-weight: bold;
+}
+
+@media (max-width: 600px) {
+  .table-compact {
+    font-size: 0.75rem;
+  }
+}
+
+/* لجعل الجدول متجاوبًا */
+.table-responsive {
+  overflow-x: auto;
+  width: 100%;
+  display: block;
+}
