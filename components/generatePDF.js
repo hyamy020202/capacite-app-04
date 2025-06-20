@@ -203,7 +203,7 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
         const isExcedent = globalRow[1] === 'Excédent';
         const bgColor = isExcedent ? [39, 174, 96] : [231, 76, 60];
 
-        // استخراج كل النسب من الجدول (بدون Résultat Global) وتحويلها لأرقام (مع العلامة)
+        // استخراج كل النسب وتحويلها لأرقام وقيمة مطلقة
         const percents = rowsSansGlobal
           .map(row => row[2])
           .filter(p => typeof p === 'string' && /^[+-]?\d+(\.\d+)?%$/.test(p))
@@ -212,10 +212,10 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
         let selectedPercent = '';
         if (percents.length) {
           if (isExcedent) {
-            // في حالة الفائض: الأقرب للصفر (أصغر قيمة مطلقة)
+            // الأقرب للصفر (أصغر قيمة مطلقة)
             selectedPercent = percents.reduce((min, p) => p.abs < min.abs ? p : min, percents[0]).raw;
           } else {
-            // في حالة التجاوز/العجز: الأبعد عن الصفر (أكبر قيمة مطلقة)
+            // الأبعد عن الصفر (أكبر قيمة مطلقة)
             selectedPercent = percents.reduce((max, p) => p.abs > max.abs ? p : max, percents[0]).raw;
           }
           // أزل العلامة ليظهر الرقم قيمة مطلقة فقط
@@ -252,9 +252,6 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
           },
           head: [],
           margin: { left: (pageWidth - tableWidth) / 2 },
-          didDrawCell: (data) => {
-            // لا شيء إضافي
-          }
         });
 
         tableStartY = pdf.lastAutoTable.finalY + 6;
