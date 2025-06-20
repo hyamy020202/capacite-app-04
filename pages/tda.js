@@ -159,13 +159,21 @@ export default function TDA() {
   const percentTp2 = calculerPourcentageLigne(heuresRestantesTp2, totalHeuresTp2, etatTp2);
   const percentTp3 = calculerPourcentageLigne(heuresRestantesTp3, totalHeuresTp3, etatTp3);
 
+  // تعديل المنطق حسب طلبك: الأقرب للصفر في الفائض، الأبعد في التجاوز
   const percentValues = [percentTheo, percentPrat, percentTpSpec, percentTp2, percentTp3]
     .filter(p => p !== "")
     .map(p => Number(p.replace('%','').replace('+','').replace('-','')));
   let percentGlobal = "";
   if (percentValues.length) {
-    const min = Math.min(...percentValues);
-    percentGlobal = (testGlobal === "Excédent" ? "+" : "-") + Math.abs(min) + "%";
+    let value;
+    if (testGlobal === "Excédent") {
+      // الأقرب للصفر (أصغر قيمة مطلقة)
+      value = Math.min(...percentValues.map(Math.abs));
+    } else {
+      // الأبعد عن الصفر (أكبر قيمة مطلقة)
+      value = Math.max(...percentValues.map(Math.abs));
+    }
+    percentGlobal = (testGlobal === "Excédent" ? "+" : "-") + value + "%";
   }
 
   const resultatsData = {
