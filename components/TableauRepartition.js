@@ -59,10 +59,10 @@ export default function TableauRepartition({ effectifData, specialties, onDataCh
   ]);
 
   return (
-    <div className="bg-white shadow rounded-2xl p-4 mb-8">
-      <h2 className="text-xl font-bold text-gray-700 mb-4 text-center">{titre || "Répartition"}</h2>
+    <div className="bg-white shadow rounded-xl p-2 mb-3 min-w-[220px] max-w-xs">
+      <h2 className="compact-title table-title text-center mb-2">{titre || "Répartition"}</h2>
       <div className="table-responsive" style={{ width: "100%", overflowX: "auto" }}>
-        <table className="table-compact">
+        <table className="compact-table table-compact">
           <thead>
             <tr>
               <th>Spécialité</th>

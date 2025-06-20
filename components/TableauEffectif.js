@@ -40,10 +40,10 @@ export default function TableauEffectif({ titre, specialties = [], data, onDataC
   const rows = data && data.length > 0 ? data : [{ specialite: "", groupes: 0, apprenants: 0 }];
 
   return (
-    <div className="bg-white shadow rounded-2xl p-4 mb-8 flex-1">
-      <h2 className="text-xl font-bold text-gray-700 mb-4 text-center">{titre}</h2>
+    <div className="bg-white shadow rounded-xl p-2 mb-3 flex-1 min-w-[220px] max-w-xs">
+      <h2 className="compact-title table-title text-center mb-2">{titre}</h2>
       <div className="table-responsive" style={{ width: "100%", overflowX: "auto" }}>
-        <table className="table-compact">
+        <table className="compact-table table-compact">
           <thead>
             <tr>
               <th>Spécialité</th>
@@ -58,8 +58,8 @@ export default function TableauEffectif({ titre, specialties = [], data, onDataC
                   <select
                     value={eff.specialite}
                     onChange={e => handleChange(idx, "specialite", e.target.value)}
-                    className="border rounded"
-                    style={{ fontSize: "0.85rem", minWidth: 90 }}
+                    className="border rounded text-xs"
+                    style={{ fontSize: "0.8rem", minWidth: 80 }}
                   >
                     <option value="">-- Choisir --</option>
                     {specialties.map(s => (
@@ -75,8 +75,8 @@ export default function TableauEffectif({ titre, specialties = [], data, onDataC
                     min={0}
                     value={eff.groupes}
                     onChange={e => handleChange(idx, "groupes", e.target.value)}
-                    className="border rounded"
-                    style={{ fontSize: "0.85rem", width: 60 }}
+                    className="border rounded text-xs"
+                    style={{ fontSize: "0.8rem", width: 48 }}
                   />
                 </td>
                 <td>
@@ -85,8 +85,8 @@ export default function TableauEffectif({ titre, specialties = [], data, onDataC
                     min={0}
                     value={eff.apprenants}
                     onChange={e => handleChange(idx, "apprenants", e.target.value)}
-                    className="border rounded"
-                    style={{ fontSize: "0.85rem", width: 60 }}
+                    className="border rounded text-xs"
+                    style={{ fontSize: "0.8rem", width: 48 }}
                   />
                 </td>
               </tr>
@@ -101,16 +101,18 @@ export default function TableauEffectif({ titre, specialties = [], data, onDataC
           </tfoot>
         </table>
       </div>
-      <div className="flex gap-4 mt-4 justify-center">
+      <div className="flex gap-2 mt-2 justify-center">
         <button
-          className="bg-blue-500 text-white rounded px-3 py-1"
+          className="bg-blue-500 text-white rounded px-2 py-1 text-xs"
           onClick={ajouterSpecialite}
+          style={{ minWidth: 0 }}
         >
           Ajouter spécialité
         </button>
         <button
-          className="bg-gray-300 text-gray-700 rounded px-3 py-1"
+          className="bg-gray-300 text-gray-700 rounded px-2 py-1 text-xs"
           onClick={annuler}
+          style={{ minWidth: 0 }}
         >
           Annuler
         </button>
