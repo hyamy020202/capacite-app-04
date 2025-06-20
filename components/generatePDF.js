@@ -202,8 +202,19 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
       if (globalRow) {
         const isExcedent = globalRow[1] === 'Excédent';
         const bgColor = isExcedent ? [39, 174, 96] : [231, 76, 60];
-        // هنا فقط نأخذ النسبة من صف Résultat Global نفسه
-        const percent = globalRow[2] ? globalRow[2].replace(/^[+-]/, "") : '';
+
+        // استخراج النسب من جميع الصفوف ما عدا Résultat Global
+        const allPercents = rowsSansGlobal.map(row => row[2])
+          .filter(x => typeof x === 'string' && x.trim() !== '' && !isNaN(parseFloat(x)));
+
+        // إيجاد الأقل بالقيمة الحقيقية (مع العلامة)
+        let minPercent = '';
+        if (allPercents.length) {
+          minPercent = allPercents.reduce((min, p) => parseFloat(p) < parseFloat(min) ? p : min, allPercents[0]);
+        }
+
+        // عند العرض فقط، احذف العلامة
+        const percent = minPercent ? minPercent.replace(/^[+-]/, "") : '';
         const resultText = `${globalRow[1]}${percent ? ` (${percent})` : ""}`;
         const label = "Résultat Global :";
         const pageWidth = pdf.internal.pageSize.getWidth();
