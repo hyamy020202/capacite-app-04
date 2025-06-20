@@ -213,12 +213,12 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
             (min, p) => parseFloat(p) < parseFloat(min) ? p : min,
             allPercents[0]
           );
-          percent = minPercent.replace(/^[+-]/, "");
+          // هنا نعرض القيمة المطلقة (بدون علامة) للأصغر رياضيا
+          percent = Math.abs(parseFloat(minPercent)).toString() + "%";
+        } else if (globalRow[2] && typeof globalRow[2] === 'string' && /^[+-]?\d+(\.\d+)?%$/.test(globalRow[2])) {
+          percent = Math.abs(parseFloat(globalRow[2])).toString() + "%";
         } else {
-          // إذا لم توجد نسب في كل الجدول اعتمد نسبة Résultat Global نفسه (إن وجدت)
-          percent = globalRow[2] && typeof globalRow[2] === 'string'
-            ? globalRow[2].replace(/^[+-]/, "")
-            : '';
+          percent = '';
         }
 
         const resultText = `${globalRow[1]}${percent ? ` (${percent})` : ""}`;
@@ -259,7 +259,7 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
       pdf.setFont(undefined, 'normal');
       pdf.text(
         "Remarques:\n" +
-        "1. Ce rapport propose une estimation diagnostique de la capacité d'accueil, basée sur les données saisies. C'est un outil d'aide à la décision pour optimiser la planification, et non une validation définitive.\n" +
+        "1. Ce rapport propose une estimation diagnostique de la capacité d'accueil, basée sur les données saisies. C'est un outil d'aide à la décision pour optimiser la planification، et non une validation définitive.\n" +
         "2. Les résultats de l'étude précitée demeurent tributaires de la disponibilité des éléments suivants :\n" +
         "- Équipe de formateurs adéquate aux groupes et spécialités.\n" +
         "- Certificat de prévention des risques de la Protection Civile.\n" +
