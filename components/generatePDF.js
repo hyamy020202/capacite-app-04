@@ -20,6 +20,17 @@ function loadLogoMinistere(callback) {
   };
 }
 
+// دالة للمقارنة بين النسب مع العلامة (تأخذ النسبة كـ "+7%" أو "-5%" وتعيد الأصغر فعلياً)
+function getMinPercentWithSign(percentArr) {
+  if (!percentArr || percentArr.length === 0) return "";
+  // استخرج الرقم مع العلامة
+  return percentArr.reduce((min, p) => {
+    const valP = parseFloat(p);
+    const valMin = parseFloat(min);
+    return valP < valMin ? p : min;
+  }, percentArr[0]);
+}
+
 export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }) {
   if (typeof window === 'undefined') {
     alert('⚠️ لا يمكن توليد PDF - يتم تنفيذ الكود خارج المتصفح.');
@@ -202,8 +213,14 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
       if (globalRow) {
         const isExcedent = globalRow[1] === 'Excédent';
         const bgColor = isExcedent ? [39, 174, 96] : [231, 76, 60];
-        // نُبقي العلامة في الحسابات - وعند العرض نزيلها فقط
-        const percent = globalRow[2] ? globalRow[2].replace(/^[+-]/, "") : '';
+
+        // استخراج جميع النسب من الأعمدة المناسبة (مثلاً العمود رقم 2 من كل صف في rowsSansGlobal)
+        const allPercents = rowsSansGlobal.map(row => row[2]).filter(x => typeof x === 'string');
+        // احصل على النسبة الأقل فعلياً مع العلامة
+        const minPercent = getMinPercentWithSign(allPercents);
+
+        // اعرضها بدون علامة فقط في PDF
+        const percent = minPercent ? minPercent.replace(/^[+-]/, "") : '';
         const resultText = `${globalRow[1]}${percent ? ` (${percent})` : ""}`;
         const label = "Résultat Global :";
         const pageWidth = pdf.internal.pageSize.getWidth();
