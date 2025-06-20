@@ -105,7 +105,7 @@ export default function TableauResultats({ data, titre }) {
   }
 
   return (
-    <div className="bg-white shadow rounded-2xl p-4 mb-8">
+    <div className="bg-white shadow rounded-2xl p-4 mb-8 mx-1">
       <h2 className="text-xl font-bold text-gray-700 mb-4 text-center">{titre || "Résultats"}</h2>
       <div className="table-responsive" style={{ width: "100%", overflowX: "auto" }}>
         <table className="table-compact">
