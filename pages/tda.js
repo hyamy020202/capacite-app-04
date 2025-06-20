@@ -201,21 +201,33 @@ export default function TDA() {
       etatTp3,
       percentTp3
     ]);
-  // استخراج النسب فقط من الصفوف الظاهرة
-  const percentValues = resultatsRows
-    .filter(row => Array.isArray(row) && row.length >= 5 && typeof row[4] === "string" && row[4].includes("%"))
-    .map(row => Math.abs(Number(row[4].replace('%','').replace('+','').replace('-',''))));
 
+  // استخراج وحساب النسبة النهائية حسب منطقك الجديد
   let percentGlobal = "";
-  if (percentValues.length) {
-    let value;
+  if (resultatsRows.length) {
     if (testGlobal === "Excédent") {
-      value = Math.min(...percentValues);
+      // أصغر نسبة موجبة (الأقرب للصفر من الفوائض)
+      const positives = resultatsRows
+        .map(row => Number(row[4]?.replace('%','').replace('+','')))
+        .filter(v => !isNaN(v) && v > 0);
+      if (positives.length) {
+        percentGlobal = "+" + Math.min(...positives) + "%";
+      } else {
+        percentGlobal = "+0%";
+      }
     } else {
-      value = Math.max(...percentValues);
+      // أكبر نسبة سالبة (الأبعد عن الصفر من التجاوزات)
+      const negatives = resultatsRows
+        .map(row => Number(row[4]?.replace('%','')))
+        .filter(v => !isNaN(v) && v < 0);
+      if (negatives.length) {
+        percentGlobal = Math.min(...negatives) + "%";
+      } else {
+        percentGlobal = "-0%";
+      }
     }
-    percentGlobal = value + "%";
   }
+
   resultatsRows.push([
     { value: "Résultat Global", colSpan: 3 },
     testGlobal,
@@ -242,7 +254,6 @@ export default function TDA() {
     ["Total", totalGroupes, totalApprenants, totalGroupes + totalApprenants]
   ];
 
-  // ---------------------- تعريف resultatsData ----------------------
   const resultatsData = {
     totalHeuresTheo,
     totalHeuresPrat,
@@ -279,7 +290,6 @@ export default function TDA() {
     etatTp3,
     testGlobal
   };
-  // -----------------------------------------------------------------
 
   const handleEffectifChange = (rows) => {
     setEffectif(rows.length ? rows : [{ specialite: "", groupes: 0, apprenants: 0 }]);
