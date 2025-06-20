@@ -89,6 +89,7 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
 
     let tableStartY = currentY + 15;
 
+    // دالة لفحص هل هناك مساحة كافية على الصفحة للرسم قبل أن نبدأ الجدول (لكي لا ينقسم بداية الجدول)
     function hasSpaceForTable(requiredHeight) {
       return (pageHeight - tableStartY) >= requiredHeight;
     }
@@ -99,13 +100,14 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
       pdf.text('Synthèse des salles', 14, tableStartY);
       tableStartY += 4;
 
-      const rowsCount = sallesSummary.length + 1;
-      const approxRowHeight = 7;
+      // حساب ارتفاع الجدول تقريبا
+      const rowsCount = sallesSummary.length + 1; // +1 للرأس
+      const approxRowHeight = 7; // تقديري لكل صف
       const requiredHeight = rowsCount * approxRowHeight + 10;
 
       if (!hasSpaceForTable(requiredHeight)) {
         pdf.addPage();
-        tableStartY = 20;
+        tableStartY = 20; // بداية رسم جديد في صفحة جديدة
       }
 
       autoTable(pdf, {
@@ -191,7 +193,7 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
         headStyles: { fillColor: [155, 89, 182] },
         margin: { left: 14, right: 14 },
       });
-      tableStartY = pdf.lastAutoTable.finalY + 2;
+      tableStartY = pdf.lastAutoTable.finalY + 2; // تقليل المسافة بعد الجدول
 
       // --- Résultat Global مباشرة بعد الجدول ---
       const globalRow = resultatsTable.rows.find(
@@ -200,36 +202,21 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
       if (globalRow) {
         const isExcedent = globalRow[1] === 'Excédent';
         const bgColor = isExcedent ? [39, 174, 96] : [231, 76, 60];
-
-        // استخراج النسب من جميع الصفوف ما عدا Résultat Global
-        const allPercents = rowsSansGlobal
-          .map(row => row[2])
-          .filter(x => typeof x === 'string' && /^[+-]?\d+(\.\d+)?%$/.test(x));
-
-        let percent = '';
-        if (allPercents.length) {
-          // إيجاد الأقل بالقيمة الحقيقية (مع العلامة)
-          const minPercent = allPercents.reduce(
-            (min, p) => parseFloat(p) < parseFloat(min) ? p : min,
-            allPercents[0]
-          );
-          // هنا نعرض القيمة المطلقة (بدون علامة) للأصغر رياضيا
-          percent = Math.abs(parseFloat(minPercent)).toString() + "%";
-        } else if (globalRow[2] && typeof globalRow[2] === 'string' && /^[+-]?\d+(\.\d+)?%$/.test(globalRow[2])) {
-          percent = Math.abs(parseFloat(globalRow[2])).toString() + "%";
-        } else {
-          percent = '';
-        }
-
+        const percent = globalRow[2] ? globalRow[2].replace(/^[+-]/, "") : '';
         const resultText = `${globalRow[1]}${percent ? ` (${percent})` : ""}`;
         const label = "Résultat Global :";
+        const pageWidth = pdf.internal.pageSize.getWidth();
+
         const fontSize = 9;
         pdf.setFontSize(fontSize);
         pdf.setFont("helvetica", "bold");
 
+        // حساب عرض كل خانة بدقة
         const w1 = pdf.getTextWidth(label) + 10;
         const w2 = pdf.getTextWidth(resultText) + 12;
         const tableWidth = w1 + w2;
+
+        // تصغير المسافة مع الجدول السابق
         const startY = tableStartY + 4;
 
         autoTable(pdf, {
@@ -240,7 +227,7 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
               { content: resultText, styles: { halign: 'center', fontStyle: 'bold', fontSize, cellWidth: w2, textColor: [255,255,255], fillColor: bgColor, lineWidth: 0 } }
             ]
           ],
-          theme: 'plain',
+          theme: 'plain', // لا أطر
           styles: {
             cellPadding: { top: 2, right: 4, bottom: 2, left: 4 },
             valign: 'middle',
@@ -248,6 +235,9 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
           },
           head: [],
           margin: { left: (pageWidth - tableWidth) / 2 },
+          didDrawCell: (data) => {
+            // لا شيء إضافي
+          }
         });
 
         tableStartY = pdf.lastAutoTable.finalY + 6;
@@ -259,7 +249,7 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
       pdf.setFont(undefined, 'normal');
       pdf.text(
         "Remarques:\n" +
-        "1. Ce rapport propose une estimation diagnostique de la capacité d'accueil, basée sur les données saisies. C'est un outil d'aide à la décision pour optimiser la planification، et non une validation définitive.\n" +
+        "1. Ce rapport propose une estimation diagnostique de la capacité d'accueil, basée sur les données saisies. C'est un outil d'aide à la décision pour optimiser la planification, et non une validation définitive.\n" +
         "2. Les résultats de l'étude précitée demeurent tributaires de la disponibilité des éléments suivants :\n" +
         "- Équipe de formateurs adéquate aux groupes et spécialités.\n" +
         "- Certificat de prévention des risques de la Protection Civile.\n" +
