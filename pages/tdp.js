@@ -139,20 +139,22 @@ export default function TDP() {
   const percentTp2 = calculerPourcentageLigne(heuresRestantesTp2, totalHeuresTp2, etatTp2);
   const percentTp3 = calculerPourcentageLigne(heuresRestantesTp3, totalHeuresTp3, etatTp3);
 
-  // ✅ التعديل هنا: الأقرب للصفر في الفائض، الأبعد عن الصفر في التجاوز
+  // ---- التصحيح هنا ----
   const percentValues = [percentTheo, percentPrat, percentTpSpec, percentTp2, percentTp3]
-    .filter(p => p !== "")
-    .map(p => Number(p.replace('%','').replace('+','').replace('-','')));
+    .filter(p => p && !isNaN(Number(p.replace('%','').replace('+','').replace('-',''))))
+    .map(p => Math.abs(Number(p.replace('%','').replace('+','').replace('-',''))));
+
   let percentGlobal = "";
   if (percentValues.length) {
     let value;
     if (testGlobal === "Excédent") {
-      value = Math.min(...percentValues.map(Math.abs));
+      value = Math.min(...percentValues);
     } else {
-      value = Math.max(...percentValues.map(Math.abs));
+      value = Math.max(...percentValues);
     }
-    percentGlobal = (testGlobal === "Excédent" ? "+" : "-") + value + "%";
+    percentGlobal = value + "%";
   }
+  // ---- نهاية التصحيح ----
 
   const resultatsData = {
     totalHeuresTheo,
