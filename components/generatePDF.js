@@ -203,44 +203,43 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
         const isExcedent = globalRow[1] === 'Excédent';
         const bgColor = isExcedent ? [39, 174, 96] : [231, 76, 60];
 
-        // استخراج جميع النسب من الجدول (بدون Résultat Global)
-        const allPercents = rowsSansGlobal
+        // استخراج النسب مع العلامة
+        const percents = rowsSansGlobal
           .map(row => row[2])
-          .filter(x => typeof x === 'string' && /^\d+(\.\d+)?%$/.test(x)); // فقط القيم المطلقة (بدون علامة)
+          .filter(p => typeof p === 'string' && /^[+-]?\d+(\.\d+)?%$/.test(p))
+          .map(p => ({ raw: p, value: parseFloat(p) }));
 
-        let percent = '';
-        if (allPercents.length) {
-          if(isExcedent){
-            // في حالة الفائض اختر الأقل (أصغر قيمة مطلقة)
-            percent = allPercents.reduce(
-              (min, p) => parseFloat(p) < parseFloat(min) ? p : min,
-              allPercents[0]
-            );
-          } else {
-            // في حالة العجز اختر الأعلى (أكبر قيمة مطلقة)
-            percent = allPercents.reduce(
-              (max, p) => parseFloat(p) > parseFloat(max) ? p : max,
-              allPercents[0]
-            );
+        let selectedPercent = '';
+        if (isExcedent) {
+          // في حالة الفائض: أقل نسبة موجبة فقط (>0)
+          const positives = percents.filter(p => p.value > 0);
+          if (positives.length) {
+            selectedPercent = positives.reduce((min, p) => p.value < min.value ? p : min, positives[0]).raw;
           }
         } else {
-          percent = globalRow[2] ? globalRow[2].replace(/^[+-]/, "") : '';
+          // في حالة التجاوز/العجز: أبعد نسبة سالبة عن الصفر (أصغر رقم)
+          const negatives = percents.filter(p => p.value < 0);
+          if (negatives.length) {
+            selectedPercent = negatives.reduce((min, p) => p.value < min.value ? p : min, negatives[0]).raw;
+          }
+        }
+        // إذا لم نجد النسبة المطلوبة، استعمل نسبة Résultat Global الأصلية (بدون علامة)
+        if (!selectedPercent) {
+          selectedPercent = globalRow[2] ? globalRow[2].replace(/^[+-]/, "") : '';
+        } else {
+          // احذف العلامة وأبق النسبة مع الأقواس فقط
+          selectedPercent = selectedPercent.replace(/^[+-]/, "");
         }
 
-        const resultText = `${globalRow[1]}${percent ? ` (${percent})` : ""}`;
+        const resultText = `${globalRow[1]}${selectedPercent ? ` (${selectedPercent})` : ""}`;
         const label = "Résultat Global :";
-        const pageWidth = pdf.internal.pageSize.getWidth();
-
         const fontSize = 9;
         pdf.setFontSize(fontSize);
         pdf.setFont("helvetica", "bold");
 
-        // حساب عرض كل خانة بدقة
         const w1 = pdf.getTextWidth(label) + 10;
         const w2 = pdf.getTextWidth(resultText) + 12;
         const tableWidth = w1 + w2;
-
-        // تصغير المسافة مع الجدول السابق
         const startY = tableStartY + 4;
 
         autoTable(pdf, {
