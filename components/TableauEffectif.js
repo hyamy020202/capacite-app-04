@@ -104,7 +104,7 @@ export default function TableauEffectif({ titre, specialties = [], data, onDataC
       <div className="flex gap-4 mt-4 justify-center">
         <button
           className="bg-blue-500 text-white rounded px-2 py-1 text-xs"
-          onClick={ajouter}
+          onClick={ajouterSpecialite}
           style={{ minWidth: 0 }}
         >
           Ajouter
