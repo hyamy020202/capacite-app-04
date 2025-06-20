@@ -202,8 +202,6 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
       if (globalRow) {
         const isExcedent = globalRow[1] === 'Excédent';
         const bgColor = isExcedent ? [39, 174, 96] : [231, 76, 60];
-
-        // احصل على النسبة كما هي مع العلامة وبدون أقواس
         const percent = globalRow[2] || '';
         const label = "Résultat Global :";
         const fontSize = 9;
@@ -212,7 +210,9 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
 
         const pageWidth = pdf.internal.pageSize.getWidth();
         const w1 = pdf.getTextWidth(label) + 10;
-        const w2 = pdf.getTextWidth(percent) + 12;
+        // تقدير عرض الخلية الثانية: اسم النتيجة + علامة + رقم النسبة
+        const resultStr = `${globalRow[1]} ${percent}`;
+        const w2 = pdf.getTextWidth(resultStr) + 12;
         const tableWidth = w1 + w2;
         const startY = tableStartY + 4;
 
@@ -220,9 +220,31 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
           startY,
           body: [
             [
-              { content: label, styles: { halign: 'center', fontStyle: 'bold', fontSize, cellWidth: w1, textColor: [0,0,0], fillColor: [255,255,255], lineWidth: 0 } },
-              { content: `${globalRow[1]} ${percent}`, styles: { halign: 'center', fontStyle: 'bold', fontSize, cellWidth: w2, textColor: [255,255,255], fillColor: bgColor, lineWidth: 0 } }
-            ]
+              {
+                content: label,
+                styles: {
+                  halign: 'center',
+                  fontStyle: 'bold',
+                  fontSize,
+                  cellWidth: w1,
+                  textColor: [0, 0, 0],
+                  fillColor: [255, 255, 255],
+                  lineWidth: 0,
+                },
+              },
+              {
+                content: "", // نرسم كل شيء يدويًا
+                styles: {
+                  halign: 'center',
+                  fontStyle: 'bold',
+                  fontSize,
+                  cellWidth: w2,
+                  textColor: [255, 255, 255],
+                  fillColor: bgColor,
+                  lineWidth: 0,
+                },
+              },
+            ],
           ],
           theme: 'plain',
           styles: {
@@ -233,42 +255,54 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
           head: [],
           margin: { left: (pageWidth - tableWidth) / 2 },
           didDrawCell: function (data) {
-            // تخصيص لون العلامة فقط
             if (
               data.column.index === 1 &&
-              data.cell.raw &&
               typeof percent === 'string' &&
+              percent.length > 1 &&
               (percent[0] === '-' || percent[0] === '+')
             ) {
               const cell = data.cell;
               const sign = percent[0];
               const number = percent.substring(1);
-              const text = `${globalRow[1]} ${number}`;
-              const fontSize = 9;
-              const signWidth = pdf.getTextWidth(sign);
-              const labelWidth = pdf.getTextWidth(globalRow[1] + " ");
-              const numberWidth = pdf.getTextWidth(number);
-              const x = cell.x + (cell.width - (labelWidth + signWidth + numberWidth)) / 2;
-              const y = cell.y + cell.height / 2 + fontSize / 2.8;
 
-              // اسم النتيجة (Excédent أو Déficit) بلون أبيض
               pdf.setFont("helvetica", "bold");
               pdf.setFontSize(fontSize);
+
+              // بناء النص النهائي كله
+              const totalString = globalRow[1] + " " + sign + number;
+              const totalWidth = pdf.getTextWidth(totalString);
+              const x = cell.x + (cell.width - totalWidth) / 2;
+              const y = cell.y + cell.height / 2 + fontSize * 0.35;
+
+              // اسم النتيجة
               pdf.setTextColor(255,255,255);
               pdf.text(globalRow[1] + " ", x, y, { baseline: 'middle' });
 
               // العلامة بلون الخلفية
               pdf.setTextColor(bgColor[0], bgColor[1], bgColor[2]);
+              const labelWidth = pdf.getTextWidth(globalRow[1] + " ");
               pdf.text(sign, x + labelWidth, y, { baseline: 'middle' });
 
               // الرقم والنسبة بالأبيض
               pdf.setTextColor(255,255,255);
-              pdf.text(number, x + labelWidth + signWidth, y, { baseline: 'middle' });
+              pdf.text(number, x + labelWidth + pdf.getTextWidth(sign), y, { baseline: 'middle' });
 
               // منع الطباعة الافتراضية
               data.cell.text = [];
+            } else if (data.column.index === 1) {
+              // إذا لم يكن هناك علامة، اطبع مباشرة اسم النتيجة والنسبة بالأبيض
+              const cell = data.cell;
+              pdf.setFont("helvetica", "bold");
+              pdf.setFontSize(fontSize);
+              pdf.setTextColor(255,255,255);
+              const resultStr = `${globalRow[1]} ${percent}`;
+              const totalWidth = pdf.getTextWidth(resultStr);
+              const x = cell.x + (cell.width - totalWidth) / 2;
+              const y = cell.y + cell.height / 2 + fontSize * 0.35;
+              pdf.text(resultStr, x, y, { baseline: 'middle' });
+              data.cell.text = [];
             }
-          }
+          },
         });
 
         tableStartY = pdf.lastAutoTable.finalY + 6;
