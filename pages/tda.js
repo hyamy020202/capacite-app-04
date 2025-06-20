@@ -11,7 +11,6 @@ import {
   determinerEtat,
 } from "../utils/calculs";
 
-// دالة لحساب النسبة لكل سطر
 function calculerPourcentageLigne(heuresRestantes, heuresDisponibles, etat) {
   if (!heuresDisponibles || isNaN(heuresRestantes)) return "";
   const percent = Math.abs(Math.round((heuresRestantes / heuresDisponibles) * 100));
@@ -20,6 +19,7 @@ function calculerPourcentageLigne(heuresRestantes, heuresDisponibles, etat) {
 
 const moyenne = arr => arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0;
 const somme = arr => arr.reduce((a, b) => a + b, 0);
+
 const defaultSalle = (cno, semaines, heures) => ({
   surface: "",
   cno,
@@ -31,7 +31,6 @@ const defaultSalle = (cno, semaines, heures) => ({
 
 export default function TDA() {
   const pdfRef = useRef();
-  // أضف tp2 وtp3 في كل الحالات الافتراضية
   const [salles, setSalles] = useState({
     theorie: [defaultSalle(1.0, 72, 56)],
     pratique: [defaultSalle(1.0, 72, 56)],
@@ -154,14 +153,12 @@ export default function TDA() {
       ? 'Excédent'
       : 'Dépassement';
 
-  // حساب النسبة لكل سطر
   const percentTheo = calculerPourcentageLigne(heuresRestantesTheo, totalHeuresTheo, etatTheo);
   const percentPrat = calculerPourcentageLigne(heuresRestantesPrat, totalHeuresPrat, etatPrat);
   const percentTpSpec = calculerPourcentageLigne(heuresRestantesTpSpec, totalHeuresTpSpec, etatTpSpec);
   const percentTp2 = calculerPourcentageLigne(heuresRestantesTp2, totalHeuresTp2, etatTp2);
   const percentTp3 = calculerPourcentageLigne(heuresRestantesTp3, totalHeuresTp3, etatTp3);
 
-  // Résultat Global: الأقل (الأكثر سلبية)
   const percentValues = [percentTheo, percentPrat, percentTpSpec, percentTp2, percentTp3]
     .filter(p => p !== "")
     .map(p => Number(p.replace('%','').replace('+','').replace('-','')));
@@ -249,7 +246,6 @@ export default function TDA() {
       etatTp3,
       percentTp3
     ]);
-  // Résultat Global: صف خاص بcolSpan = 3 مع النسبة
   resultatsRows.push([
     { value: "Résultat Global", colSpan: 3 },
     testGlobal,
@@ -260,7 +256,6 @@ export default function TDA() {
     rows: resultatsRows
   };
 
-  // فلترة synthèse des salles
   const sallesSummaryRaw = [
     ["Théorie", salles.theorie.length, moyenneSurfaceTheo.toFixed(2), totalHeuresTheo],
     ["Pratique", salles.pratique.length, moyenneSurfacePrat.toFixed(2), totalHeuresPrat],
@@ -348,7 +343,7 @@ export default function TDA() {
             setApprenants={setApprenants}
           />
         </div>
-        <div className="mb-4">
+        <div className="tables-row">
           <TableauEffectif
             titre="Effectif Actuel"
             specialties={specialties}
@@ -357,8 +352,6 @@ export default function TDA() {
             data={effectif}
             salles={salles}
           />
-        </div>
-        <div className="mb-4">
           <TableauRepartition
             titre="Répartition actuelle des heures"
             effectifData={effectif}
@@ -366,8 +359,6 @@ export default function TDA() {
             onDataChange={handleRepartitionChange}
             salles={salles}
           />
-        </div>
-        <div className="mb-4">
           <TableauResultats titre="Résultat" data={resultatsData} salles={salles} />
         </div>
       </div>

@@ -70,31 +70,28 @@ td {
   display: block;
 }
 
-/* ----------- هنا الإضافة الجديدة لحاوية الجداول ----------- */
-/* حاوية الجداول: صف أفقي مع التفاف */
+/* ----------- إضافة لجعل الجداول جنبًا إلى جنب ----------- */
 .tables-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px; /* مسافة بين الجداول */
-  justify-content: start;
+  gap: 16px;
+  justify-content: flex-start;
   align-items: flex-start;
   margin-bottom: 24px;
 }
 
-.tables-row > table {
+.tables-row > * {
   min-width: 270px;
   max-width: 100%;
-  flex: 1 1 300px; /* قابل للتصغير والتكبير مع حد أدنى */
+  flex: 1 1 300px;
 }
 
-/* على الشاشات الصغيرة: الجداول تحت بعضها */
 @media (max-width: 800px) {
   .tables-row {
     flex-direction: column;
     gap: 10px;
   }
-
-  .tables-row > table {
+  .tables-row > * {
     width: 100%;
     min-width: unset;
     flex: unset;

@@ -6,7 +6,6 @@ import TableauResultats from "../components/TableauResultats";
 import useSpecialties from "../components/useSpecialties";
 import { generatePDF } from "../components/generatePDF";
 
-// دالة لحساب النسبة لكل سطر
 function calculerPourcentageLigne(heuresRestantes, heuresDisponibles, etat) {
   if (!heuresDisponibles || isNaN(heuresRestantes)) return "";
   const percent = Math.abs(Math.round((heuresRestantes / heuresDisponibles) * 100));
@@ -27,8 +26,6 @@ const defaultSalle = (cno, semaines, heures) => ({
 
 export default function TDP() {
   const pdfRef = useRef();
-
-  // أضف tp2 وtp3 في كل الحالات الافتراضية
   const [salles, setSalles] = useState({
     theorie: [defaultSalle(1.0, 72, 56)],
     pratique: [defaultSalle(1.0, 72, 56)],
@@ -36,7 +33,6 @@ export default function TDP() {
     tp2: [defaultSalle(1.0, 72, 56)],
     tp3: [defaultSalle(1.0, 72, 56)],
   });
-
   const [cnos, setCnos] = useState({
     theorie: 1.0,
     pratique: 1.0,
@@ -58,7 +54,6 @@ export default function TDP() {
     tp2: 56,
     tp3: 56,
   });
-
   const [apprenants, setApprenants] = useState({
     theorie: 26,
     pratique: 26,
@@ -66,7 +61,6 @@ export default function TDP() {
     tp2: 26,
     tp3: 26,
   });
-
   const [effectif, setEffectif] = useState([
     { specialite: "", groupes: 0, groupesAjout: 0, apprenants: 0 }
   ]);
@@ -84,18 +78,6 @@ export default function TDP() {
   });
   const specialties = useSpecialties();
 
-  const totalHeuresTheo = somme(salles.theorie.map(s => Number(s.heuresMax) || 0));
-  const totalHeuresPrat = somme(salles.pratique.map(s => Number(s.heuresMax) || 0));
-  const totalHeuresTpSpec = somme(salles.tpSpecifiques.map(s => Number(s.heuresMax) || 0));
-  const totalHeuresTp2 = somme(salles.tp2.map(s => Number(s.heuresMax) || 0));
-  const totalHeuresTp3 = somme(salles.tp3.map(s => Number(s.heuresMax) || 0));
-  const moyenneSurfaceTheo = moyenne(salles.theorie.map(s => Number(s.surfaceP) || 0));
-  const moyenneSurfacePrat = moyenne(salles.pratique.map(s => Number(s.surfaceP) || 0));
-  const moyenneSurfaceTpSpec = moyenne(salles.tpSpecifiques.map(s => Number(s.surfaceP) || 0));
-  const moyenneSurfaceTp2 = moyenne(salles.tp2.map(s => Number(s.surfaceP) || 0));
-  const moyenneSurfaceTp3 = moyenne(salles.tp3.map(s => Number(s.surfaceP) || 0));
-
-  // --- حساب النتائج النهائية ---
   function calculerHeuresRestantes(total, besoin) {
     return Number(total) - Number(besoin);
   }
@@ -106,6 +88,17 @@ export default function TDP() {
     if (!moyenneBesoin || !moyenneSurface || isNaN(heuresRestantes)) return 0;
     return Math.max(0, Math.floor((heuresRestantes / moyenneBesoin) * moyenneSurface));
   }
+
+  const totalHeuresTheo = somme(salles.theorie.map(s => Number(s.heuresMax) || 0));
+  const totalHeuresPrat = somme(salles.pratique.map(s => Number(s.heuresMax) || 0));
+  const totalHeuresTpSpec = somme(salles.tpSpecifiques.map(s => Number(s.heuresMax) || 0));
+  const totalHeuresTp2 = somme(salles.tp2.map(s => Number(s.heuresMax) || 0));
+  const totalHeuresTp3 = somme(salles.tp3.map(s => Number(s.heuresMax) || 0));
+  const moyenneSurfaceTheo = moyenne(salles.theorie.map(s => Number(s.surfaceP) || 0));
+  const moyenneSurfacePrat = moyenne(salles.pratique.map(s => Number(s.surfaceP) || 0));
+  const moyenneSurfaceTpSpec = moyenne(salles.tpSpecifiques.map(s => Number(s.surfaceP) || 0));
+  const moyenneSurfaceTp2 = moyenne(salles.tp2.map(s => Number(s.surfaceP) || 0));
+  const moyenneSurfaceTp3 = moyenne(salles.tp3.map(s => Number(s.surfaceP) || 0));
 
   const heuresRestantesTheo = calculerHeuresRestantes(totalHeuresTheo, repartition.besoinTheoTotal);
   const heuresRestantesPrat = calculerHeuresRestantes(totalHeuresPrat, repartition.besoinPratTotal);
@@ -140,14 +133,12 @@ export default function TDP() {
       ? 'Excédent'
       : 'Dépassement';
 
-  // حساب النسبة لكل سطر
   const percentTheo = calculerPourcentageLigne(heuresRestantesTheo, totalHeuresTheo, etatTheo);
   const percentPrat = calculerPourcentageLigne(heuresRestantesPrat, totalHeuresPrat, etatPrat);
   const percentTpSpec = calculerPourcentageLigne(heuresRestantesTpSpec, totalHeuresTpSpec, etatTpSpec);
   const percentTp2 = calculerPourcentageLigne(heuresRestantesTp2, totalHeuresTp2, etatTp2);
   const percentTp3 = calculerPourcentageLigne(heuresRestantesTp3, totalHeuresTp3, etatTp3);
 
-  // Résultat Global: الأقل (الأكثر سلبية)
   const percentValues = [percentTheo, percentPrat, percentTpSpec, percentTp2, percentTp3]
     .filter(p => p !== "")
     .map(p => Number(p.replace('%','').replace('+','').replace('-','')));
@@ -157,7 +148,6 @@ export default function TDP() {
     percentGlobal = (testGlobal === "Excédent" ? "+" : "-") + Math.abs(min) + "%";
   }
 
-  // تعريف resultatsData قبل أي استخدام له
   const resultatsData = {
     totalHeuresTheo,
     totalHeuresPrat,
@@ -236,7 +226,6 @@ export default function TDP() {
       etatTp3,
       percentTp3
     ]);
-  // Résultat Global: صف خاص بcolSpan = 3 مع النسبة
   resultatsRows.push([
     { value: "Résultat Global", colSpan: 3 },
     testGlobal,
@@ -247,7 +236,6 @@ export default function TDP() {
     rows: resultatsRows
   };
 
-  // فلترة synthèse des salles فقط
   const sallesSummaryRaw = [
     ["Théorie", salles.theorie.length, moyenneSurfaceTheo.toFixed(2), totalHeuresTheo],
     ["Pratique", salles.pratique.length, moyenneSurfacePrat.toFixed(2), totalHeuresPrat],
@@ -363,7 +351,7 @@ export default function TDP() {
             setApprenants={setApprenants}
           />
         </div>
-        <div className="mb-4">
+        <div className="tables-row">
           <TableauEffectifAjout
             titre="Effectif Prévu"
             specialties={specialties}
@@ -373,8 +361,6 @@ export default function TDP() {
             salles={salles}
             moyenneSurfaceTheo={moyenneSurfaceTheo}
           />
-        </div>
-        <div className="mb-4">
           <TableauRepartitionAjout
             titre="Répartition Prévue des heures"
             effectifData={effectif}
@@ -382,8 +368,6 @@ export default function TDP() {
             onDataChange={handleRepartitionChange}
             salles={salles}
           />
-        </div>
-        <div className="mb-4">
           <TableauResultats titre="Résultat" data={resultatsData} salles={salles} />
         </div>
       </div>
