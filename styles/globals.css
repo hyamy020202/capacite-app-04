@@ -69,3 +69,35 @@ td {
   width: 100%;
   display: block;
 }
+
+/* ----------- هنا الإضافة الجديدة لحاوية الجداول ----------- */
+/* حاوية الجداول: صف أفقي مع التفاف */
+.tables-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px; /* مسافة بين الجداول */
+  justify-content: start;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.tables-row > table {
+  min-width: 270px;
+  max-width: 100%;
+  flex: 1 1 300px; /* قابل للتصغير والتكبير مع حد أدنى */
+}
+
+/* على الشاشات الصغيرة: الجداول تحت بعضها */
+@media (max-width: 800px) {
+  .tables-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .tables-row > table {
+    width: 100%;
+    min-width: unset;
+    flex: unset;
+  }
+}
+/* ----------- نهاية الإضافة ----------- */
