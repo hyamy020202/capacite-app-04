@@ -309,6 +309,7 @@ export default function TDP() {
 
   const handleReset = () => {
     localStorage.removeItem("tdpData");
+    alert("Les données ont été réinitialisées.");
     window.location.reload();
   };
 
