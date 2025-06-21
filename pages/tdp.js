@@ -345,20 +345,6 @@ export default function TDP() {
         <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-center text-gray-800 mb-3">
           Diagnostic de l&apos;état prévu
         </h1>
-        <div className="flex justify-center gap-8 my-6">
-          <label className="flex items-center gap-2 font-semibold text-gray-700">
-            <input type="checkbox" checked={showEffectif} onChange={() => setShowEffectif(v => !v)} />
-            Effectif
-          </label>
-          <label className="flex items-center gap-2 font-semibold text-gray-700">
-            <input type="checkbox" checked={showRepartition} onChange={() => setShowRepartition(v => !v)} />
-            Répartition
-          </label>
-          <label className="flex items-center gap-2 font-semibold text-gray-700">
-            <input type="checkbox" checked={showResultats} onChange={() => setShowResultats(v => !v)} />
-            Résultat
-          </label>
-        </div>
         <div className="flex flex-col lg:flex-row gap-4 flex-wrap mb-3">
           <TableauSalles
             salles={salles}
@@ -373,6 +359,23 @@ export default function TDP() {
             setApprenants={setApprenants}
           />
         </div>
+
+        {/* checkboxes الجديدة أسفل جداول القاعات وبنفس حجم الخط */}
+        <div className="flex justify-center gap-6 mb-4 mt-2">
+          <label className="flex items-center gap-1 text-xs font-semibold text-gray-700">
+            <input type="checkbox" checked={showEffectif} onChange={() => setShowEffectif(v => !v)} />
+            Effectif
+          </label>
+          <label className="flex items-center gap-1 text-xs font-semibold text-gray-700">
+            <input type="checkbox" checked={showRepartition} onChange={() => setShowRepartition(v => !v)} />
+            Répartition
+          </label>
+          <label className="flex items-center gap-1 text-xs font-semibold text-gray-700">
+            <input type="checkbox" checked={showResultats} onChange={() => setShowResultats(v => !v)} />
+            Résultat
+          </label>
+        </div>
+
         <div className="tables-row">
           {showEffectif && (
             <TableauEffectifAjout
