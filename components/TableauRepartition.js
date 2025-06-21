@@ -50,10 +50,24 @@ export default function TableauRepartition({ effectifData, specialties, onDataCh
     const spec = findSpecialtyData(row.specialite);
     return Number(spec["Besoin Pratique par Groupe"]) || 0;
   });
-  // أضف بقية الأنواع إذا احتجت
+  const besoinTP1ParGroupeArr = rows.map(row => {
+    const spec = findSpecialtyData(row.specialite);
+    return Number(spec["Besoin TP Spécifique par Groupe"]) || 0;
+  });
+  const besoinTP2ParGroupeArr = rows.map(row => {
+    const spec = findSpecialtyData(row.specialite);
+    return Number(spec["Besoin TP2 par Groupe"]) || 0;
+  });
+  const besoinTP3ParGroupeArr = rows.map(row => {
+    const spec = findSpecialtyData(row.specialite);
+    return Number(spec["Besoin TP3 par Groupe"]) || 0;
+  });
 
   const moyenneBesoinTheoriqueParGroupe = moyenneColonne(besoinTheoriqueParGroupeArr);
   const moyenneBesoinPratiqueParGroupe = moyenneColonne(besoinPratiqueParGroupeArr);
+  const moyenneBesoinTpSpecParGroupe = moyenneColonne(besoinTP1ParGroupeArr);
+  const moyenneBesoinTp2ParGroupe = moyenneColonne(besoinTP2ParGroupeArr);
+  const moyenneBesoinTp3ParGroupe = moyenneColonne(besoinTP3ParGroupeArr);
 
   useEffect(() => {
     if (onDataChange) {
@@ -64,15 +78,19 @@ export default function TableauRepartition({ effectifData, specialties, onDataCh
           besoinTP1Total: sumBesoinTP1,
           besoinTP2Total: sumBesoinTP2,
           besoinTP3Total: sumBesoinTP3,
-          // أضف المتوسطات هنا
           moyenneBesoinTheoriqueParGroupe,
           moyenneBesoinPratiqueParGroupe,
+          moyenneBesoinTpSpecParGroupe,
+          moyenneBesoinTp2ParGroupe,
+          moyenneBesoinTp3ParGroupe,
         }
       ]);
     }
   }, [
     sumBesoinTheorie, sumBesoinInfo, sumBesoinTP1, sumBesoinTP2, sumBesoinTP3,
-    moyenneBesoinTheoriqueParGroupe, moyenneBesoinPratiqueParGroupe, onDataChange
+    moyenneBesoinTheoriqueParGroupe, moyenneBesoinPratiqueParGroupe,
+    moyenneBesoinTpSpecParGroupe, moyenneBesoinTp2ParGroupe, moyenneBesoinTp3ParGroupe,
+    onDataChange
   ]);
 
   return (
