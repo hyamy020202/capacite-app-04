@@ -375,7 +375,7 @@ export default function TDA() {
                 type="checkbox"
                 checked={showEffectif}
                 onChange={() => setShowEffectif(v => !v)}
-                className="accent-blue-600"
+                className="accent-blue-500"
               />
               Effectif
             </label>
@@ -384,7 +384,7 @@ export default function TDA() {
                 type="checkbox"
                 checked={showRepartition}
                 onChange={() => setShowRepartition(v => !v)}
-                className="accent-blue-600"
+                className="accent-blue-500"
               />
               Répartition
             </label>
@@ -393,7 +393,7 @@ export default function TDA() {
                 type="checkbox"
                 checked={showResultats}
                 onChange={() => setShowResultats(v => !v)}
-                className="accent-blue-600"
+                className="accent-blue-500"
               />
               Résultat
             </label>
