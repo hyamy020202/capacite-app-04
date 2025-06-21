@@ -37,7 +37,7 @@ export default function Home() {
           style={{ width: 360, height: 60, objectFit: 'contain' }}
         />
         <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6">
-          Diagnostic de la Capacité d&apos;Accueil
+          Simulateur de Diagnostic de la Capacité d&apos;Accueil
         </h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 text-left">
@@ -72,13 +72,13 @@ export default function Home() {
             onClick={() => router.push('/tda')}
             className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-xl shadow"
           >
-            Diagnostic de de l&apos;état actuel
+            Simulateur de l&apos;état actuel
           </button>
           <button
             onClick={() => router.push('/tdp')}
             className="bg-[#FFA500] hover:bg-[#e69500] text-white font-semibold py-3 px-6 rounded-xl shadow"
           >
-            Diagnostic de de l&apos;état prévu
+            Simulateur de l&apos;état prévu
           </button>
         </div>
 
