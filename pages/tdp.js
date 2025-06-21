@@ -287,11 +287,11 @@ export default function TDP() {
       besoinTpSpecTotal: r.besoinTP1Total ?? 0,
       besoinTp2Total: r.besoinTP2Total ?? 0,
       besoinTp3Total: r.besoinTP3Total ?? 0,
-      moyenneTheo: r.besoinTheoParGroupe ?? 0,
-      moyennePrat: r.besoinPratParGroupe ?? 0,
-      moyenneTpSpec: r.besoinTpSpecParGroupe ?? 0,
-      moyenneTp2: r.besoinTp2ParGroupe ?? 0,
-      moyenneTp3: r.besoinTp3ParGroupe ?? 0,
+      moyenneTheo: r.moyenneBesoinTheoriqueParGroupe ?? 0,
+      moyennePrat: r.moyenneBesoinPratiqueParGroupe ?? 0,
+      moyenneTpSpec: r.moyenneBesoinTpSpecParGroupe ?? 0,
+      moyenneTp2: r.moyenneBesoinTp2ParGroupe ?? 0,
+      moyenneTp3: r.moyenneBesoinTp3ParGroupe ?? 0,
     });
   };
 
