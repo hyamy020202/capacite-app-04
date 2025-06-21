@@ -231,13 +231,14 @@ export default function TDP() {
   const totalGroupesAjout = somme(effectif.map(e => Number(e.groupesAjout) || 0));
   const totalGroupesTotal = somme(effectif.map(e => (Number(e.groupes) || 0) + (Number(e.groupesAjout) || 0)));
   const totalApprenants = somme(effectif.map(e => Number(e.apprenants) || 0));
+
   const apprenantsSummary = [
     ...effectif.map(e => [
       e.specialite,
-      e.groupes,
-      e.groupesAjout,
+      Number(e.groupes) || 0,
+      Number(e.groupesAjout) || 0,
       (Number(e.groupes) || 0) + (Number(e.groupesAjout) || 0),
-      e.apprenants
+      Number(e.apprenants) || 0
     ]),
     [
       "Total",
