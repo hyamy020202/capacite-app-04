@@ -97,9 +97,11 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
     // --- جداول جنبًا إلى جنب: sallesSummary و apprenantsSummary ---
     if (sallesSummary && sallesSummary.length > 0 && apprenantsSummary && apprenantsSummary.length > 0) {
       pdf.setFontSize(11);
-      // إعدادات الجدولين
-      const tableWidth = (pageWidth - 28) / 2 - 3; // نصف الصفحة تقريبًا
-      let leftFinalY = tableStartY, rightFinalY = tableStartY;
+
+      // تحديد العرض والموضع
+      const availableWidth = pageWidth - 28; // 14 هامش يمين ويسار
+      const middle = 14 + availableWidth / 2;
+      let leftTableEndY = tableStartY, rightTableEndY = tableStartY;
 
       // جدول القاعات (يسار)
       autoTable(pdf, {
@@ -108,10 +110,9 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
         body: sallesSummary,
         styles: { fontSize: 9 },
         theme: 'grid',
-        tableWidth,
         headStyles: { fillColor: [41, 128, 185] },
-        margin: { left: 14, right: pageWidth - tableWidth - 14 },
-        didDrawPage: (data) => { leftFinalY = pdf.lastAutoTable.finalY; }
+        margin: { left: 14, right: pageWidth - middle },
+        didDrawPage: (data) => { leftTableEndY = pdf.lastAutoTable.finalY; }
       });
 
       // جدول المتعلمين (يمين)
@@ -121,13 +122,12 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
         body: apprenantsSummary.map(row => row.slice(0, 3)),
         styles: { fontSize: 9 },
         theme: 'grid',
-        tableWidth,
         headStyles: { fillColor: [255, 165, 0] },
-        margin: { left: 14 + tableWidth + 6, right: 14 },
-        didDrawPage: (data) => { rightFinalY = pdf.lastAutoTable.finalY; }
+        margin: { left: middle, right: 14 },
+        didDrawPage: (data) => { rightTableEndY = pdf.lastAutoTable.finalY; }
       });
 
-      tableStartY = Math.max(leftFinalY, rightFinalY) + 10;
+      tableStartY = Math.max(leftTableEndY, rightTableEndY) + 10;
     } else {
       // --- ملخص القاعات ---
       if (sallesSummary && sallesSummary.length > 0) {
@@ -194,9 +194,10 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
     // --- جداول جنبًا إلى جنب: النتائج وجدول Résultat Global ---
     if (resultatsTable && resultatsTable.rows.length > 0) {
       pdf.setFontSize(11);
-      // جدول النتائج بدون Résultat Global (يسار) وجدول Résultat Global (يمين)
-      const tableWidth = (pageWidth - 28) / 2 - 3;
-      let leftFinalY = tableStartY, rightFinalY = tableStartY;
+
+      const availableWidth = pageWidth - 28;
+      const middle = 14 + availableWidth / 2;
+      let leftTableEndY = tableStartY, rightTableEndY = tableStartY;
 
       // إزالة صف Résultat Global من الجدول
       const rowsSansGlobal = resultatsTable.rows.filter(
@@ -228,10 +229,9 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
         body: body,
         styles: { fontSize: 9, halign: 'center', valign: 'middle' },
         theme: 'grid',
-        tableWidth,
         headStyles: { fillColor: [155, 89, 182] },
-        margin: { left: 14, right: pageWidth - tableWidth - 14 },
-        didDrawPage: (data) => { leftFinalY = pdf.lastAutoTable.finalY; }
+        margin: { left: 14, right: pageWidth - middle },
+        didDrawPage: (data) => { leftTableEndY = pdf.lastAutoTable.finalY; }
       });
 
       // Résultat Global (يمين)
@@ -260,13 +260,12 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
             font: "helvetica"
           },
           head: [],
-          tableWidth,
-          margin: { left: 14 + tableWidth + 6, right: 14 },
-          didDrawPage: (data) => { rightFinalY = pdf.lastAutoTable.finalY; }
+          margin: { left: middle, right: 14 },
+          didDrawPage: (data) => { rightTableEndY = pdf.lastAutoTable.finalY; }
         });
       }
 
-      tableStartY = Math.max(leftFinalY, rightFinalY) + 12;
+      tableStartY = Math.max(leftTableEndY, rightTableEndY) + 12;
     } else {
       console.warn('⚠️ لم يتم العثور على بيانات ملخص النتائج.');
     }
