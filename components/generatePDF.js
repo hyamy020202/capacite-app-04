@@ -1,7 +1,7 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
-// تحميل صورة الشعار
+// تحميل صورة الشعار (base64) من public/logo.png
 function loadLogoMinistere(callback) {
   const img = new window.Image();
   img.src = '/logo1.png';
@@ -15,6 +15,7 @@ function loadLogoMinistere(callback) {
     callback(base64);
   };
   img.onerror = () => {
+    console.warn('⚠️ فشل تحميل الشعار من المسار: /logo.png');
     callback(null);
   };
 }
@@ -40,6 +41,10 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
   pdf.setFontSize(10);
   pdf.text(dateTime, pageWidth - 14, 10, { align: 'right' });
 
+  // --- ترقيم الصفحات (يتم إضافته بعد الانتهاء) ---
+  const totalPagesExp = "{total_pages_count_string}";
+
+  // --- تحميل الشعار ووضعه ---
   loadLogoMinistere((logoMinistere) => {
     let currentY = 10;
     if (logoMinistere) {
@@ -47,6 +52,7 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
     }
     currentY += 38;
 
+    // --- النص تحت الشعار ---
     pdf.setFontSize(7);
     pdf.text(
       "Direction Générale de l'Inspection et de l'Audit Pédagogique",
@@ -74,6 +80,7 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
     pdf.setTextColor(0, 0, 0);
     currentY += 15;
 
+    // --- معلومات عامة ---
     const nomStructure = localStorage.getItem('nomStructure') || 'Structure inconnue';
     const numEnregistrement = localStorage.getItem('numEnregistrement') || '---';
     pdf.setFontSize(10);
@@ -82,13 +89,27 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
 
     let tableStartY = currentY + 15;
 
-    // --- جداول جنبًا إلى جنب: sallesSummary و apprenantsSummary ---
-    if (sallesSummary && sallesSummary.length > 0 && apprenantsSummary && apprenantsSummary.length > 0) {
-      const availableWidth = pageWidth - 28; // 14 هامش يمين ويسار
-      const mid = 14 + availableWidth / 2;
-      let leftTableEndY = tableStartY, rightTableEndY = tableStartY;
+    // دالة لفحص هل هناك مساحة كافية على الصفحة للرسم قبل أن نبدأ الجدول (لكي لا ينقسم بداية الجدول)
+    function hasSpaceForTable(requiredHeight) {
+      return (pageHeight - tableStartY) >= requiredHeight;
+    }
 
-      // جدول القاعات (يسار)
+    // --- ملخص القاعات ---
+    if (sallesSummary && sallesSummary.length > 0) {
+      pdf.setFontSize(11);
+      pdf.text('Synthèse des salles', 14, tableStartY);
+      tableStartY += 4;
+
+      // حساب ارتفاع الجدول تقريبا
+      const rowsCount = sallesSummary.length + 1; // +1 للرأس
+      const approxRowHeight = 7; // تقديري لكل صف
+      const requiredHeight = rowsCount * approxRowHeight + 10;
+
+      if (!hasSpaceForTable(requiredHeight)) {
+        pdf.addPage();
+        tableStartY = 20; // بداية رسم جديد في صفحة جديدة
+      }
+
       autoTable(pdf, {
         startY: tableStartY,
         head: [['Type de salle', 'Nombre de salles', 'Moy. surface pédagogique', 'Nb max heures disponibles']],
@@ -96,63 +117,51 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
         styles: { fontSize: 9 },
         theme: 'grid',
         headStyles: { fillColor: [41, 128, 185] },
-        margin: { left: 14, right: pageWidth - mid },
-        didDrawPage: (data) => { leftTableEndY = pdf.lastAutoTable.finalY; }
+        margin: { left: 14, right: 14 },
       });
+      tableStartY = pdf.lastAutoTable.finalY + 10;
+    } else {
+      console.warn('⚠️ لم يتم العثور على بيانات ملخص القاعات.');
+    }
 
-      // جدول المتعلمين (يمين)
+    // --- ملخص المتعلمين ---
+    if (apprenantsSummary && apprenantsSummary.length > 0) {
+      pdf.setFontSize(11);
+      pdf.text('Synthèse des apprenants', 14, tableStartY);
+      const apprenantsHeader = ['Spécialité', 'Total groupes', 'Total apprenants'];
+      const apprenantsBody = apprenantsSummary.map(row => row.slice(0, 3));
+      tableStartY += 4;
+
+      const rowsCount = apprenantsBody.length + 1;
+      const approxRowHeight = 7;
+      const requiredHeight = rowsCount * approxRowHeight + 10;
+
+      if (!hasSpaceForTable(requiredHeight)) {
+        pdf.addPage();
+        tableStartY = 20;
+      }
+
       autoTable(pdf, {
         startY: tableStartY,
-        head: [['Spécialité', 'Total groupes', 'Total apprenants']],
-        body: apprenantsSummary.map(row => row.slice(0, 3)),
+        head: [apprenantsHeader],
+        body: apprenantsBody,
         styles: { fontSize: 9 },
         theme: 'grid',
         headStyles: { fillColor: [255, 165, 0] },
-        margin: { left: mid, right: 14 },
-        didDrawPage: (data) => { rightTableEndY = pdf.lastAutoTable.finalY; }
+        margin: { left: 14, right: 14 },
       });
-
-      tableStartY = Math.max(leftTableEndY, rightTableEndY) + 10;
+      tableStartY = pdf.lastAutoTable.finalY + 10;
     } else {
-      // fallback: رأسياً
-      if (sallesSummary && sallesSummary.length > 0) {
-        pdf.setFontSize(11);
-        pdf.text('Synthèse des salles', 14, tableStartY);
-        tableStartY += 4;
-        autoTable(pdf, {
-          startY: tableStartY,
-          head: [['Type de salle', 'Nombre de salles', 'Moy. surface pédagogique', 'Nb max heures disponibles']],
-          body: sallesSummary,
-          styles: { fontSize: 9 },
-          theme: 'grid',
-          headStyles: { fillColor: [41, 128, 185] },
-          margin: { left: 14, right: 14 },
-        });
-        tableStartY = pdf.lastAutoTable.finalY + 10;
-      }
-      if (apprenantsSummary && apprenantsSummary.length > 0) {
-        pdf.setFontSize(11);
-        pdf.text('Synthèse des apprenants', 14, tableStartY);
-        tableStartY += 4;
-        autoTable(pdf, {
-          startY: tableStartY,
-          head: [['Spécialité', 'Total groupes', 'Total apprenants']],
-          body: apprenantsSummary.map(row => row.slice(0, 3)),
-          styles: { fontSize: 9 },
-          theme: 'grid',
-          headStyles: { fillColor: [255, 165, 0] },
-          margin: { left: 14, right: 14 },
-        });
-        tableStartY = pdf.lastAutoTable.finalY + 10;
-      }
+      console.warn('⚠️ لم يتم العثور على بيانات ملخص المتعلمين.');
     }
 
-    // --- جداول جنبًا إلى جنب: النتائج وجدول Résultat Global ---
+    // --- ملخص النتائج ---
     if (resultatsTable && resultatsTable.rows.length > 0) {
-      const availableWidth = pageWidth - 28;
-      const mid = 14 + availableWidth / 2;
-      let leftTableEndY = tableStartY, rightTableEndY = tableStartY;
+      pdf.setFontSize(11);
+      pdf.text('Synthèse des résultats', 14, tableStartY);
+      tableStartY += 4;
 
+      // إزالة صف Résultat Global من الجدول
       const rowsSansGlobal = resultatsTable.rows.filter(
         row => !(row[0] && typeof row[0] === "object" && row[0].value === "Résultat Global")
       );
@@ -175,7 +184,6 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
         })
       );
 
-      // جدول النتائج (يسار)
       autoTable(pdf, {
         startY: tableStartY,
         head: [resultatsTable.columns.slice(0, 4)],
@@ -183,60 +191,94 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
         styles: { fontSize: 9, halign: 'center', valign: 'middle' },
         theme: 'grid',
         headStyles: { fillColor: [155, 89, 182] },
-        margin: { left: 14, right: pageWidth - mid },
-        didDrawPage: (data) => { leftTableEndY = pdf.lastAutoTable.finalY; }
+        margin: { left: 14, right: 14 },
       });
+      tableStartY = pdf.lastAutoTable.finalY + 2; // تقليل المسافة بعد الجدول
 
-      // Résultat Global (يمين)
+      // --- Résultat Global مباشرة بعد الجدول ---
       const globalRow = resultatsTable.rows.find(
         row => row[0] && typeof row[0] === "object" && row[0].value === "Résultat Global"
       );
       if (globalRow) {
         const isExcedent = globalRow[1] === 'Excédent';
         const bgColor = isExcedent ? [39, 174, 96] : [231, 76, 60];
-        const fontSize = 13;
+
+        // استخراج كل النسب من الجدول (بدون Résultat Global) وتحويلها لأرقام (مع العلامة)
+        const percents = rowsSansGlobal
+          .map(row => row[2])
+          .filter(p => typeof p === 'string' && /^[+-]?\d+(\.\d+)?%$/.test(p))
+          .map(p => ({ raw: p, abs: Math.abs(parseFloat(p)) }));
+
+        let selectedPercent = '';
+        if (percents.length) {
+          if (isExcedent) {
+            // في حالة الفائض: الأقرب للصفر (أصغر قيمة مطلقة)
+            selectedPercent = percents.reduce((min, p) => p.abs < min.abs ? p : min, percents[0]).raw;
+          } else {
+            // في حالة التجاوز/العجز: الأبعد عن الصفر (أكبر قيمة مطلقة)
+            selectedPercent = percents.reduce((max, p) => p.abs > max.abs ? p : max, percents[0]).raw;
+          }
+          // أزل العلامة ليظهر الرقم قيمة مطلقة فقط
+          selectedPercent = selectedPercent.replace(/^[+-]/, "");
+        } else {
+          // fallback على نسبة Résultat Global الأصلية (بدون علامة)
+          selectedPercent = globalRow[2] ? globalRow[2].replace(/^[+-]/, "") : '';
+        }
+
+        const resultText = `${globalRow[1]}${selectedPercent ? ` (${selectedPercent})` : ""}`;
+        const label = "Résultat Global :";
+        const fontSize = 9;
         pdf.setFontSize(fontSize);
         pdf.setFont("helvetica", "bold");
 
+        const w1 = pdf.getTextWidth(label) + 10;
+        const w2 = pdf.getTextWidth(resultText) + 12;
+        const tableWidth = w1 + w2;
+        const startY = tableStartY + 4;
+
         autoTable(pdf, {
-          startY: tableStartY,
+          startY,
           body: [
             [
-              { content: "Résultat Global :", styles: { halign: 'center', fontStyle: 'bold', fontSize, textColor: [0,0,0], fillColor: [255,255,255], lineWidth: 0 } },
-              { content: `${globalRow[1]} ${globalRow[2] ?? ""}`, styles: { halign: 'center', fontStyle: 'bold', fontSize, textColor: [255,255,255], fillColor: bgColor, lineWidth: 0 } }
+              { content: label, styles: { halign: 'center', fontStyle: 'bold', fontSize, cellWidth: w1, textColor: [0,0,0], fillColor: [255,255,255], lineWidth: 0 } },
+              { content: resultText, styles: { halign: 'center', fontStyle: 'bold', fontSize, cellWidth: w2, textColor: [255,255,255], fillColor: bgColor, lineWidth: 0 } }
             ]
           ],
-          theme: 'plain',
+          theme: 'plain', // لا أطر
           styles: {
-            cellPadding: { top: 6, right: 6, bottom: 6, left: 6 },
+            cellPadding: { top: 2, right: 4, bottom: 2, left: 4 },
             valign: 'middle',
             font: "helvetica"
           },
           head: [],
-          margin: { left: mid, right: 14 },
-          didDrawPage: (data) => { rightTableEndY = pdf.lastAutoTable.finalY; }
+          margin: { left: (pageWidth - tableWidth) / 2 },
+          didDrawCell: (data) => {
+            // لا شيء إضافي
+          }
         });
+
+        tableStartY = pdf.lastAutoTable.finalY + 6;
       }
 
-      tableStartY = Math.max(leftTableEndY, rightTableEndY) + 12;
+      // --- النص التوضيحي أسفل النتائج ---
+      pdf.setFontSize(10);
+      pdf.setTextColor(80);
+      pdf.setFont(undefined, 'normal');
+      pdf.text(
+        "Remarques:\n" +
+        "1. Ce rapport propose une estimation diagnostique de la capacité d'accueil, basée sur les données saisies. C'est un outil d'aide à la décision pour optimiser la planification, et non une validation définitive.\n" +
+        "2. Les résultats de l'étude précitée demeurent tributaires de la disponibilité des éléments suivants :\n" +
+        "- Équipe de formateurs adéquate aux groupes et spécialités.\n" +
+        "- Certificat de prévention des risques de la Protection Civile.\n" +
+        "- Voies de circulation et système de ventilation adéquats\n" +
+        "- Équipements nécessaires selon la spécificité des spécialités",
+        14,
+        tableStartY,
+        { maxWidth: pageWidth - 28, align: 'left' }
+      );
+    } else {
+      console.warn('⚠️ لم يتم العثور على بيانات ملخص النتائج.');
     }
-
-    // --- النص التوضيحي أسفل النتائج ---
-    pdf.setFontSize(10);
-    pdf.setTextColor(80);
-    pdf.setFont(undefined, 'normal');
-    pdf.text(
-      "Remarques:\n" +
-      "1. Ce rapport propose une estimation diagnostique de la capacité d'accueil, basée sur les données saisies. C'est un outil d'aide à la décision pour optimiser la planification, et non une validation définitive.\n" +
-      "2. Les résultats de l'étude précitée demeurent tributaires de la disponibilité des éléments suivants :\n" +
-      "- Équipe de formateurs adéquate aux groupes et spécialités.\n" +
-      "- Certificat de prévention des risques de la Protection Civile.\n" +
-      "- Voies de circulation et système de ventilation adéquats\n" +
-      "- Équipements nécessaires selon la spécificité des spécialités",
-      14,
-      tableStartY,
-      { maxWidth: pageWidth - 28, align: 'left' }
-    );
 
     // --- ترقيم الصفحات في كل صفحة ---
     const pageCount = pdf.getNumberOfPages();
