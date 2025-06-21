@@ -8,7 +8,7 @@ import { generatePDF } from "../components/generatePDF";
 
 function calculerPourcentageLigne(heuresRestantes, heuresDemandées, etat) {
   if (!heuresDemandées || isNaN(heuresRestantes)) return "";
-  const percent = Math.round((heuresRestantes / heuresDemandées) * 100);
+  const percent = Math.abs(Math.round((heuresRestantes / heuresDemandées) * 100));
   return etat === "Excédent" ? `+${percent}%` : `-${percent}%`;
 }
 
