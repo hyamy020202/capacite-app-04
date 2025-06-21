@@ -435,13 +435,13 @@ export default function TDA() {
           onClick={() => generatePDF({ sallesSummary, apprenantsSummary, resultatsTable })}
           className="bg-green-600 hover:bg-green-700 text-white shadow"
         >
-          📄 Générer le PDF
+          📄 Générer PDF
         </button>
         <button
           onClick={handleSave}
           className="bg-yellow-500 hover:bg-yellow-600 text-white shadow"
         >
-          💾 Enregistrer les modifications
+          💾 Enregistrer modifications
         </button>
         <button
           onClick={handleReset}
