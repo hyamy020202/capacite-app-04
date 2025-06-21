@@ -11,9 +11,9 @@ import {
   determinerEtat,
 } from "../utils/calculs";
 
-function calculerPourcentageLigne(heuresRestantes, heuresDisponibles, etat) {
-  if (!heuresDisponibles || isNaN(heuresRestantes)) return "";
-  const percent = Math.abs(Math.round((heuresRestantes / heuresDisponibles) * 100));
+function calculerPourcentageLigne(heuresRestantes, heuresDemandées, etat) {
+  if (!heuresDemandées || isNaN(heuresRestantes)) return "";
+  const percent = Math.round((heuresRestantes / heuresDemandées) * 100);
   return etat === "Excédent" ? `+${percent}%` : `-${percent}%`;
 }
 
@@ -156,11 +156,11 @@ export default function TDA() {
       ? 'Excédent'
       : 'Dépassement';
 
-  const percentTheo = calculerPourcentageLigne(heuresRestantesTheo, totalHeuresTheo, etatTheo);
-  const percentPrat = calculerPourcentageLigne(heuresRestantesPrat, totalHeuresPrat, etatPrat);
-  const percentTpSpec = calculerPourcentageLigne(heuresRestantesTpSpec, totalHeuresTpSpec, etatTpSpec);
-  const percentTp2 = calculerPourcentageLigne(heuresRestantesTp2, totalHeuresTp2, etatTp2);
-  const percentTp3 = calculerPourcentageLigne(heuresRestantesTp3, totalHeuresTp3, etatTp3);
+  const percentTheo = calculerPourcentageLigne(heuresRestantesTheo, repartition.besoinTheoTotal, etatTheo);
+  const percentPrat = calculerPourcentageLigne(heuresRestantesPrat, repartition.besoinPratTotal, etatPrat);
+  const percentTpSpec = calculerPourcentageLigne(heuresRestantesTpSpec, repartition.besoinTpSpecTotal, etatTpSpec);
+  const percentTp2 = calculerPourcentageLigne(heuresRestantesTp2, repartition.besoinTp2Total, etatTp2);
+  const percentTp3 = calculerPourcentageLigne(heuresRestantesTp3, repartition.besoinTp3Total, etatTp3);
 
   // حساب Résultat Global فقط للصفوف الظاهرة
   const resultatsRows = [];
