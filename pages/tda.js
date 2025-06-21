@@ -354,18 +354,18 @@ export default function TDA() {
         <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-center text-gray-800 mb-3">
           Diagnostic de l&apos;état actuel
         </h1>
-        <div className="flex flex-row gap-4 mb-4">
-          <label>
+        <div className="flex justify-center gap-8 my-6">
+          <label className="flex items-center gap-2 font-semibold text-gray-700">
             <input type="checkbox" checked={showEffectif} onChange={() => setShowEffectif(v => !v)} />
-            <span className="ml-2">إظهار جدول المتكونين</span>
+            Effectif
           </label>
-          <label>
+          <label className="flex items-center gap-2 font-semibold text-gray-700">
             <input type="checkbox" checked={showRepartition} onChange={() => setShowRepartition(v => !v)} />
-            <span className="ml-2">إظهار جدول التوزيع</span>
+            Répartition
           </label>
-          <label>
+          <label className="flex items-center gap-2 font-semibold text-gray-700">
             <input type="checkbox" checked={showResultats} onChange={() => setShowResultats(v => !v)} />
-            <span className="ml-2">إظهار جدول النتائج</span>
+            Résultat
           </label>
         </div>
         <div className="flex flex-col lg:flex-row gap-4 flex-wrap mb-3">
