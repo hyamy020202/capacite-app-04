@@ -5,11 +5,19 @@ import TableauRepartitionAjout from "../components/TableauRepartitionAjout";
 import TableauResultats from "../components/TableauResultats";
 import useSpecialties from "../components/useSpecialties";
 import { generatePDF } from "../components/generatePDF";
+import {
+  calculerHeuresRestantes,
+  calculerApprenantsPossibles,
+  determinerEtat,
+} from "../utils/calculsAjout";
 
 function calculerPourcentageLigne(heuresRestantes, heuresDemandées, etat) {
   if (!heuresDemandées || isNaN(heuresRestantes)) return "";
-  const percent = Math.abs(Math.round((heuresRestantes / heuresDemandées) * 100));
-  return etat === "Excédent" ? `+${percent}%` : `-${percent}%`;
+  let percent = (heuresRestantes / heuresDemandées) * 100;
+  percent = Math.round(percent);
+  if (percent === 0) return "0%";
+  if (etat === "Excédent") return `+${Math.abs(percent)}%`;
+  return `-${Math.abs(percent)}%`;
 }
 
 const moyenne = arr => arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0;
@@ -80,18 +88,6 @@ export default function TDP() {
   const [showRepartition, setShowRepartition] = useState(false);
   const [showResultats, setShowResultats] = useState(false);
   const specialties = useSpecialties();
-
-  function calculerHeuresRestantes(total, besoin) {
-    return Number(total) - Number(besoin);
-  }
-  function determinerEtat(heuresRestantes) {
-    return heuresRestantes >= 0 ? 'Excédent' : 'Dépassement';
-  }
-  function calculerApprenantsPossibles(heuresRestantes, moyenneBesoin, moyenneSurface) {
-    if (!moyenneBesoin || !moyenneSurface || isNaN(heuresRestantes)) return 0;
-    // احذف Math.max ليظهر العدد حتى لو كان سالباً (مثل tda.js)
-    return Math.floor((heuresRestantes / moyenneBesoin) * moyenneSurface);
-  }
 
   const totalHeuresTheo = somme(salles.theorie.map(s => Number(s.heuresMax) || 0));
   const totalHeuresPrat = somme(salles.pratique.map(s => Number(s.heuresMax) || 0));
@@ -239,43 +235,43 @@ export default function TDP() {
   ];
 
   const resultatsData = {
-  totalHeuresTheo,
-  totalHeuresPrat,
-  totalHeuresTpSpec,
-  totalHeuresTp2,
-  totalHeuresTp3,
-  besoinTheoTotal: repartition.besoinTheoTotal,
-  besoinPratTotal: repartition.besoinPratTotal,
-  besoinTpSpecTotal: repartition.besoinTpSpecTotal,
-  besoinTp2Total: repartition.besoinTp2Total,
-  besoinTp3Total: repartition.besoinTp3Total,
-  moyenneBesoinTheo: repartition.moyenneTheo,
-  moyenneBesoinPrat: repartition.moyennePrat,
-  moyenneBesoinTpSpec: repartition.moyenneTpSpec,
-  moyenneBesoinTp2: repartition.moyenneTp2,      // أضف هذا السطر
-  moyenneBesoinTp3: repartition.moyenneTp3,      // وأضف هذا السطر
-  moyenneSurfaceTheo,
-  moyenneSurfacePrat,
-  moyenneSurfaceTpSpec,
-  moyenneSurfaceTp2,
-  moyenneSurfaceTp3,
-  heuresRestantesTheo,
-  heuresRestantesPrat,
-  heuresRestantesTpSpec,
-  heuresRestantesTp2,
-  heuresRestantesTp3,
-  apprenantsPossiblesTheo,
-  apprenantsPossiblesPrat,
-  apprenantsPossiblesTpSpec,
-  apprenantsPossiblesTp2,
-  apprenantsPossiblesTp3,
-  etatTheo,
-  etatPrat,
-  etatTpSpec,
-  etatTp2,
-  etatTp3,
-  testGlobal
-};
+    totalHeuresTheo,
+    totalHeuresPrat,
+    totalHeuresTpSpec,
+    totalHeuresTp2,
+    totalHeuresTp3,
+    besoinTheoTotal: repartition.besoinTheoTotal,
+    besoinPratTotal: repartition.besoinPratTotal,
+    besoinTpSpecTotal: repartition.besoinTpSpecTotal,
+    besoinTp2Total: repartition.besoinTp2Total,
+    besoinTp3Total: repartition.besoinTp3Total,
+    moyenneBesoinTheo: repartition.moyenneTheo,
+    moyenneBesoinPrat: repartition.moyennePrat,
+    moyenneBesoinTpSpec: repartition.moyenneTpSpec,
+    moyenneBesoinTp2: repartition.moyenneTp2,
+    moyenneBesoinTp3: repartition.moyenneTp3,
+    moyenneSurfaceTheo,
+    moyenneSurfacePrat,
+    moyenneSurfaceTpSpec,
+    moyenneSurfaceTp2,
+    moyenneSurfaceTp3,
+    heuresRestantesTheo,
+    heuresRestantesPrat,
+    heuresRestantesTpSpec,
+    heuresRestantesTp2,
+    heuresRestantesTp3,
+    apprenantsPossiblesTheo,
+    apprenantsPossiblesPrat,
+    apprenantsPossiblesTpSpec,
+    apprenantsPossiblesTp2,
+    apprenantsPossiblesTp3,
+    etatTheo,
+    etatPrat,
+    etatTpSpec,
+    etatTp2,
+    etatTp3,
+    testGlobal
+  };
 
   const handleEffectifChange = (rows) => {
     if (!rows || rows.length === 0) {
