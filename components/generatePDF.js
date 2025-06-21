@@ -67,15 +67,15 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
     const paddingH = 5;
     const paddingV = 3;
     pdf.setFontSize(15);
-    pdf.setDrawColor(41, 128, 185);
-    pdf.setFillColor(230, 240, 255);
+    pdf.setDrawColor(0, 0, 0);         // إطار أسود
+    pdf.setFillColor(255, 255, 255);   // خلفية بيضاء (بدون لون)
     const textWidth = pdf.getTextWidth(title);
     const rectX = (pageWidth - textWidth) / 2 - paddingH;
     const rectY = currentY - 10;
     const rectWidth = textWidth + 2 * paddingH;
     const rectHeight = 10 + 2 * paddingV;
-    pdf.roundedRect(rectX, rectY, rectWidth, rectHeight, 2, 2, 'FD');
-    pdf.setTextColor(41, 128, 185);
+    pdf.roundedRect(rectX, rectY, rectWidth, rectHeight, 2, 2, 'S'); // 'S' = Stroke فقط (بدون تعبئة)
+    pdf.setTextColor(0, 0, 0);         // لون العنوان أسود
     pdf.text(title, pageWidth / 2, currentY, { align: 'center' });
     pdf.setTextColor(0, 0, 0);
     currentY += 15;
