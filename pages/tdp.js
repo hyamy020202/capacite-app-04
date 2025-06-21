@@ -86,7 +86,8 @@ export default function TDP() {
   }
   function calculerApprenantsPossibles(heuresRestantes, moyenneBesoin, moyenneSurface) {
     if (!moyenneBesoin || !moyenneSurface || isNaN(heuresRestantes)) return 0;
-    return Math.max(0, Math.floor((heuresRestantes / moyenneBesoin) * moyenneSurface));
+    // احذف Math.max ليظهر العدد حتى لو كان سالباً (مثل tda.js)
+    return Math.floor((heuresRestantes / moyenneBesoin) * moyenneSurface);
   }
 
   const totalHeuresTheo = somme(salles.theorie.map(s => Number(s.heuresMax) || 0));
