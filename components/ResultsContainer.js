@@ -9,13 +9,17 @@ const specialties = [
     "Spécialité": "Math", 
     "Besoin Théorique par Groupe": 10, 
     "Besoin Pratique par Groupe": 12,
-    "Besoin TP Spécifique par Groupe": 6
+    "Besoin TP Spécifique par Groupe": 6,
+    "Besoin TP2 par Groupe": 4,           // أضف هذا
+    "Besoin TP3 par Groupe": 2            // وأضف هذا
   },
   { 
     "Spécialité": "Physique", 
     "Besoin Théorique par Groupe": 8, 
     "Besoin Pratique par Groupe": 14,
-    "Besoin TP Spécifique par Groupe": 7
+    "Besoin TP Spécifique par Groupe": 7,
+    "Besoin TP2 par Groupe": 5,           // أضف هذا
+    "Besoin TP3 par Groupe": 3            // وأضف هذا
   },
 ];
 
