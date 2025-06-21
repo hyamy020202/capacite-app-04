@@ -371,15 +371,30 @@ export default function TDA() {
           {/* checkboxes الجديدة أسفل جداول القاعات وبنفس حجم الخط */}
           <div className="w-full flex justify-center gap-6 mb-4 mt-2">
             <label className="flex items-center gap-1 text-xs text-gray-700 font-normal">
-              <input type="checkbox" checked={showEffectif} onChange={() => setShowEffectif(v => !v)} />
+              <input
+                type="checkbox"
+                checked={showEffectif}
+                onChange={() => setShowEffectif(v => !v)}
+                className="accent-blue-600"
+              />
               Effectif
             </label>
             <label className="flex items-center gap-1 text-xs text-gray-700 font-normal">
-              <input type="checkbox" checked={showRepartition} onChange={() => setShowRepartition(v => !v)} />
+              <input
+                type="checkbox"
+                checked={showRepartition}
+                onChange={() => setShowRepartition(v => !v)}
+                className="accent-blue-600"
+              />
               Répartition
             </label>
             <label className="flex items-center gap-1 text-xs text-gray-700 font-normal">
-              <input type="checkbox" checked={showResultats} onChange={() => setShowResultats(v => !v)} />
+              <input
+                type="checkbox"
+                checked={showResultats}
+                onChange={() => setShowResultats(v => !v)}
+                className="accent-blue-600"
+              />
               Résultat
             </label>
           </div>
