@@ -1,7 +1,7 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
-// تحميل صورة الشعار (base64) من public/logo.png
+// تحميل صورة الشعار
 function loadLogoMinistere(callback) {
   const img = new window.Image();
   img.src = '/logo1.png';
@@ -15,7 +15,6 @@ function loadLogoMinistere(callback) {
     callback(base64);
   };
   img.onerror = () => {
-    console.warn('⚠️ فشل تحميل الشعار من المسار: /logo.png');
     callback(null);
   };
 }
@@ -41,10 +40,6 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
   pdf.setFontSize(10);
   pdf.text(dateTime, pageWidth - 14, 10, { align: 'right' });
 
-  // --- ترقيم الصفحات (يتم إضافته بعد الانتهاء) ---
-  const totalPagesExp = "{total_pages_count_string}";
-
-  // --- تحميل الشعار ووضعه ---
   loadLogoMinistere((logoMinistere) => {
     let currentY = 10;
     if (logoMinistere) {
@@ -52,7 +47,6 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
     }
     currentY += 38;
 
-    // --- النص تحت الشعار ---
     pdf.setFontSize(7);
     pdf.text(
       "Direction Générale de l'Inspection et de l'Audit Pédagogique",
@@ -80,7 +74,6 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
     pdf.setTextColor(0, 0, 0);
     currentY += 15;
 
-    // --- معلومات عامة ---
     const nomStructure = localStorage.getItem('nomStructure') || 'Structure inconnue';
     const numEnregistrement = localStorage.getItem('numEnregistrement') || '---';
     pdf.setFontSize(10);
@@ -89,18 +82,10 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
 
     let tableStartY = currentY + 15;
 
-    // دالة لفحص هل هناك مساحة كافية على الصفحة للرسم قبل أن نبدأ الجدول (لكي لا ينقسم بداية الجدول)
-    function hasSpaceForTable(requiredHeight) {
-      return (pageHeight - tableStartY) >= requiredHeight;
-    }
-
     // --- جداول جنبًا إلى جنب: sallesSummary و apprenantsSummary ---
     if (sallesSummary && sallesSummary.length > 0 && apprenantsSummary && apprenantsSummary.length > 0) {
-      pdf.setFontSize(11);
-
-      // تحديد العرض والموضع
       const availableWidth = pageWidth - 28; // 14 هامش يمين ويسار
-      const middle = 14 + availableWidth / 2;
+      const mid = 14 + availableWidth / 2;
       let leftTableEndY = tableStartY, rightTableEndY = tableStartY;
 
       // جدول القاعات (يسار)
@@ -111,7 +96,7 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
         styles: { fontSize: 9 },
         theme: 'grid',
         headStyles: { fillColor: [41, 128, 185] },
-        margin: { left: 14, right: pageWidth - middle },
+        margin: { left: 14, right: pageWidth - mid },
         didDrawPage: (data) => { leftTableEndY = pdf.lastAutoTable.finalY; }
       });
 
@@ -123,28 +108,17 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
         styles: { fontSize: 9 },
         theme: 'grid',
         headStyles: { fillColor: [255, 165, 0] },
-        margin: { left: middle, right: 14 },
+        margin: { left: mid, right: 14 },
         didDrawPage: (data) => { rightTableEndY = pdf.lastAutoTable.finalY; }
       });
 
       tableStartY = Math.max(leftTableEndY, rightTableEndY) + 10;
     } else {
-      // --- ملخص القاعات ---
+      // fallback: رأسياً
       if (sallesSummary && sallesSummary.length > 0) {
         pdf.setFontSize(11);
         pdf.text('Synthèse des salles', 14, tableStartY);
         tableStartY += 4;
-
-        // حساب ارتفاع الجدول تقريبا
-        const rowsCount = sallesSummary.length + 1; // +1 للرأس
-        const approxRowHeight = 7; // تقديري لكل صف
-        const requiredHeight = rowsCount * approxRowHeight + 10;
-
-        if (!hasSpaceForTable(requiredHeight)) {
-          pdf.addPage();
-          tableStartY = 20; // بداية رسم جديد في صفحة جديدة
-        }
-
         autoTable(pdf, {
           startY: tableStartY,
           head: [['Type de salle', 'Nombre de salles', 'Moy. surface pédagogique', 'Nb max heures disponibles']],
@@ -155,51 +129,30 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
           margin: { left: 14, right: 14 },
         });
         tableStartY = pdf.lastAutoTable.finalY + 10;
-      } else {
-        console.warn('⚠️ لم يتم العثور على بيانات ملخص القاعات.');
       }
-
-      // --- ملخص المتعلمين ---
       if (apprenantsSummary && apprenantsSummary.length > 0) {
         pdf.setFontSize(11);
         pdf.text('Synthèse des apprenants', 14, tableStartY);
-        const apprenantsHeader = ['Spécialité', 'Total groupes', 'Total apprenants'];
-        const apprenantsBody = apprenantsSummary.map(row => row.slice(0, 3));
         tableStartY += 4;
-
-        const rowsCount = apprenantsBody.length + 1;
-        const approxRowHeight = 7;
-        const requiredHeight = rowsCount * approxRowHeight + 10;
-
-        if (!hasSpaceForTable(requiredHeight)) {
-          pdf.addPage();
-          tableStartY = 20;
-        }
-
         autoTable(pdf, {
           startY: tableStartY,
-          head: [apprenantsHeader],
-          body: apprenantsBody,
+          head: [['Spécialité', 'Total groupes', 'Total apprenants']],
+          body: apprenantsSummary.map(row => row.slice(0, 3)),
           styles: { fontSize: 9 },
           theme: 'grid',
           headStyles: { fillColor: [255, 165, 0] },
           margin: { left: 14, right: 14 },
         });
         tableStartY = pdf.lastAutoTable.finalY + 10;
-      } else {
-        console.warn('⚠️ لم يتم العثور على بيانات ملخص المتعلمين.');
       }
     }
 
     // --- جداول جنبًا إلى جنب: النتائج وجدول Résultat Global ---
     if (resultatsTable && resultatsTable.rows.length > 0) {
-      pdf.setFontSize(11);
-
       const availableWidth = pageWidth - 28;
-      const middle = 14 + availableWidth / 2;
+      const mid = 14 + availableWidth / 2;
       let leftTableEndY = tableStartY, rightTableEndY = tableStartY;
 
-      // إزالة صف Résultat Global من الجدول
       const rowsSansGlobal = resultatsTable.rows.filter(
         row => !(row[0] && typeof row[0] === "object" && row[0].value === "Résultat Global")
       );
@@ -230,7 +183,7 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
         styles: { fontSize: 9, halign: 'center', valign: 'middle' },
         theme: 'grid',
         headStyles: { fillColor: [155, 89, 182] },
-        margin: { left: 14, right: pageWidth - middle },
+        margin: { left: 14, right: pageWidth - mid },
         didDrawPage: (data) => { leftTableEndY = pdf.lastAutoTable.finalY; }
       });
 
@@ -260,14 +213,12 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
             font: "helvetica"
           },
           head: [],
-          margin: { left: middle, right: 14 },
+          margin: { left: mid, right: 14 },
           didDrawPage: (data) => { rightTableEndY = pdf.lastAutoTable.finalY; }
         });
       }
 
       tableStartY = Math.max(leftTableEndY, rightTableEndY) + 12;
-    } else {
-      console.warn('⚠️ لم يتم العثور على بيانات ملخص النتائج.');
     }
 
     // --- النص التوضيحي أسفل النتائج ---
