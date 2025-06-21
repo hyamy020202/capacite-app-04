@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { calculerBesoinHoraireParSpecialite, sommeColonne } from "../utils/calculs";
+import { calculerBesoinHoraireParSpecialite, sommeColonne, moyenneColonne } from "../utils/calculs";
 
 export default function TableauRepartition({ effectifData, specialties, onDataChange, titre }) {
   const findSpecialtyData = (specialite) => {
@@ -42,6 +42,19 @@ export default function TableauRepartition({ effectifData, specialties, onDataCh
   const sumBesoinTP2 = besoinTP2Arr.reduce((a, b) => a + b, 0);
   const sumBesoinTP3 = besoinTP3Arr.reduce((a, b) => a + b, 0);
 
+  const besoinTheoriqueParGroupeArr = rows.map(row => {
+    const spec = findSpecialtyData(row.specialite);
+    return Number(spec["Besoin Théorique par Groupe"]) || 0;
+  });
+  const besoinPratiqueParGroupeArr = rows.map(row => {
+    const spec = findSpecialtyData(row.specialite);
+    return Number(spec["Besoin Pratique par Groupe"]) || 0;
+  });
+  // أضف بقية الأنواع إذا احتجت
+
+  const moyenneBesoinTheoriqueParGroupe = moyenneColonne(besoinTheoriqueParGroupeArr);
+  const moyenneBesoinPratiqueParGroupe = moyenneColonne(besoinPratiqueParGroupeArr);
+
   useEffect(() => {
     if (onDataChange) {
       onDataChange([
@@ -51,11 +64,15 @@ export default function TableauRepartition({ effectifData, specialties, onDataCh
           besoinTP1Total: sumBesoinTP1,
           besoinTP2Total: sumBesoinTP2,
           besoinTP3Total: sumBesoinTP3,
+          // أضف المتوسطات هنا
+          moyenneBesoinTheoriqueParGroupe,
+          moyenneBesoinPratiqueParGroupe,
         }
       ]);
     }
   }, [
-    sumBesoinTheorie, sumBesoinInfo, sumBesoinTP1, sumBesoinTP2, sumBesoinTP3, onDataChange
+    sumBesoinTheorie, sumBesoinInfo, sumBesoinTP1, sumBesoinTP2, sumBesoinTP3,
+    moyenneBesoinTheoriqueParGroupe, moyenneBesoinPratiqueParGroupe, onDataChange
   ]);
 
   return (
