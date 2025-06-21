@@ -229,16 +229,20 @@ export default function TDP() {
 
   const totalGroupes = somme(effectif.map(e => Number(e.groupes) || 0));
   const totalGroupesAjout = somme(effectif.map(e => Number(e.groupesAjout) || 0));
+  // هنا: Total groupes = مجموع الموجود + المضاف لكل تخصص
   const totalGroupesTotal = somme(effectif.map(e => (Number(e.groupes) || 0) + (Number(e.groupesAjout) || 0)));
-  const totalApprenants = somme(effectif.map(e => Number(e.apprenants) || 0));
+  // هنا: Total apprenants = مجموع المتكونين الموجودين + المضافين (إذا كان عندك apprenantsAjout)
+  const totalApprenants = somme(effectif.map(e =>
+    (Number(e.apprenants) || 0) + (Number(e.apprenantsAjout) || 0)
+  ));
 
   const apprenantsSummary = [
     ...effectif.map(e => [
       e.specialite,
       Number(e.groupes) || 0,
       Number(e.groupesAjout) || 0,
-      (Number(e.groupes) || 0) + (Number(e.groupesAjout) || 0),
-      Number(e.apprenants) || 0
+      (Number(e.groupes) || 0) + (Number(e.groupesAjout) || 0), // مجموع الأفواج لهذا التخصص
+      (Number(e.apprenants) || 0) + (Number(e.apprenantsAjout) || 0) // مجموع المتكونين لهذا التخصص
     ]),
     [
       "Total",
