@@ -38,9 +38,9 @@ export default function TableauSalles({
 }) {
   // حالة إظهار الجداول
   const [visibleTables, setVisibleTables] = useState({
-    theorie: true,
-    pratique: true,
-    tpSpecifiques: true,
+    theorie: false,
+    pratique: false,
+    tpSpecifiques: false,
     tp2: false,
     tp3: false,
   });
