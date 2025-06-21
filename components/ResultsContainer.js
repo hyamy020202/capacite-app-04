@@ -60,6 +60,15 @@ export default function ResultsContainer() {
     const spec = specialties.find(s => s["Spécialité"] === row.specialite) || {};
     return sum + (Number(row.groupes) * Number(spec["Besoin TP Spécifique par Groupe"] || 0));
   }, 0);
+  const besoinTp2Total = effectifData.reduce((sum, row) => {
+    const spec = specialties.find(s => s["Spécialité"] === row.specialite) || {};
+    return sum + (Number(row.groupes) * Number(spec["Besoin TP2 par Groupe"] || 0));
+  }, 0);
+
+  const besoinTp3Total = effectifData.reduce((sum, row) => {
+    const spec = specialties.find(s => s["Spécialité"] === row.specialite) || {};
+    return sum + (Number(row.groupes) * Number(spec["Besoin TP3 par Groupe"] || 0));
+  }, 0);
 
   const moyenneBesoinTheo = (() => {
     const arr = effectifData
@@ -89,6 +98,27 @@ export default function ResultsContainer() {
       .map(row => {
         const spec = specialties.find(s => s["Spécialité"] === row.specialite);
         return Number(spec["Besoin TP Spécifique par Groupe"]) || 0;
+      });
+    if (arr.length === 0) return 0;
+    return arr.reduce((a, b) => a + b, 0) / arr.length;
+  })();
+  const moyenneBesoinTp2 = (() => {
+    const arr = effectifData
+      .filter(row => row.specialite && specialties.some(s => s["Spécialité"] === row.specialite))
+      .map(row => {
+        const spec = specialties.find(s => s["Spécialité"] === row.specialite);
+        return Number(spec["Besoin TP2 par Groupe"]) || 0;
+      });
+    if (arr.length === 0) return 0;
+    return arr.reduce((a, b) => a + b, 0) / arr.length;
+  })();
+
+  const moyenneBesoinTp3 = (() => {
+    const arr = effectifData
+      .filter(row => row.specialite && specialties.some(s => s["Spécialité"] === row.specialite))
+      .map(row => {
+        const spec = specialties.find(s => s["Spécialité"] === row.specialite);
+        return Number(spec["Besoin TP3 par Groupe"]) || 0;
       });
     if (arr.length === 0) return 0;
     return arr.reduce((a, b) => a + b, 0) / arr.length;
@@ -129,9 +159,13 @@ export default function ResultsContainer() {
           besoinTheoTotal: Number(besoinTheoTotal),
           besoinPratTotal: Number(besoinPratTotal),
           besoinTpSpecTotal: Number(besoinTpSpecTotal),
+          besoinTp2Total: Number(besoinTp2Total),
+          besoinTp3Total: Number(besoinTp3Total),
           moyenneBesoinTheo: Number(moyenneBesoinTheo),
           moyenneBesoinPrat: Number(moyenneBesoinPrat),
           moyenneBesoinTpSpec: Number(moyenneBesoinTpSpec),
+          moyenneBesoinTp2: Number(moyenneBesoinTp2),
+          moyenneBesoinTp3: Number(moyenneBesoinTp3),
           moyenneSurfaceTheo: Number(moyenneSurfaceTheo),
           moyenneSurfacePrat: Number(moyenneSurfacePrat),
           moyenneSurfaceTpSpec: Number(moyenneSurfaceTpSpec),
