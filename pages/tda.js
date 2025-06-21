@@ -370,7 +370,7 @@ export default function TDA() {
 
           {/* checkboxes الجديدة أسفل جداول القاعات وبنفس حجم الخط */}
           <div className="w-full flex justify-center gap-6 mb-4 mt-2">
-            <label className="flex items-center gap-1 text-xs text-gray-700 font-normal">
+            <label className="flex items-center gap-1 text-xs">
               <input
                 type="checkbox"
                 checked={showEffectif}
@@ -379,7 +379,7 @@ export default function TDA() {
               />
               Effectif
             </label>
-            <label className="flex items-center gap-1 text-xs text-gray-700 font-normal">
+            <label className="flex items-center gap-1 text-xs">
               <input
                 type="checkbox"
                 checked={showRepartition}
@@ -388,7 +388,7 @@ export default function TDA() {
               />
               Répartition
             </label>
-            <label className="flex items-center gap-1 text-xs text-gray-700 font-normal">
+            <label className="flex items-center gap-1 text-xs">
               <input
                 type="checkbox"
                 checked={showResultats}
