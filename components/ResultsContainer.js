@@ -133,6 +133,13 @@ export default function ResultsContainer() {
   const moyenneSurfaceTpSpec = (salles?.tpSpecifiques || []).length
     ? ((salles?.tpSpecifiques || []).reduce((a, s) => a + Number(s.surfaceP) || 0, 0) / (salles?.tpSpecifiques || []).length).toFixed(2)
     : 0;
+  const moyenneSurfaceTp2 = (salles?.tp2 || []).length
+    ? ((salles?.tp2 || []).reduce((a, s) => a + Number(s.surfaceP) || 0, 0) / (salles?.tp2 || []).length).toFixed(2)
+    : 0;
+
+  const moyenneSurfaceTp3 = (salles?.tp3 || []).length
+    ? ((salles?.tp3 || []).reduce((a, s) => a + Number(s.surfaceP) || 0, 0) / (salles?.tp3 || []).length).toFixed(2)
+    : 0;
 
   return (
     <div>
@@ -169,6 +176,8 @@ export default function ResultsContainer() {
           moyenneSurfaceTheo: Number(moyenneSurfaceTheo),
           moyenneSurfacePrat: Number(moyenneSurfacePrat),
           moyenneSurfaceTpSpec: Number(moyenneSurfaceTpSpec),
+          moyenneSurfaceTp2: Number(moyenneSurfaceTp2),      // أضف هذا
+          moyenneSurfaceTp3: Number(moyenneSurfaceTp3),      // وأضف هذا
         }}
       />
     </div>
