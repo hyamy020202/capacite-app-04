@@ -76,6 +76,9 @@ export default function TDP() {
     moyenneTp2: 0,
     moyenneTp3: 0,
   });
+  const [showEffectif, setShowEffectif] = useState(false);
+  const [showRepartition, setShowRepartition] = useState(false);
+  const [showResultats, setShowResultats] = useState(false);
   const specialties = useSpecialties();
 
   function calculerHeuresRestantes(total, besoin) {
@@ -342,6 +345,20 @@ export default function TDP() {
         <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-center text-gray-800 mb-3">
           Diagnostic de l&apos;état prévu
         </h1>
+        <div className="flex flex-row gap-4 mb-4">
+          <label>
+            <input type="checkbox" checked={showEffectif} onChange={() => setShowEffectif(v => !v)} />
+            <span className="ml-2">إظهار جدول المتكونين</span>
+          </label>
+          <label>
+            <input type="checkbox" checked={showRepartition} onChange={() => setShowRepartition(v => !v)} />
+            <span className="ml-2">إظهار جدول التوزيع</span>
+          </label>
+          <label>
+            <input type="checkbox" checked={showResultats} onChange={() => setShowResultats(v => !v)} />
+            <span className="ml-2">إظهار جدول النتائج</span>
+          </label>
+        </div>
         <div className="flex flex-col lg:flex-row gap-4 flex-wrap mb-3">
           <TableauSalles
             salles={salles}
@@ -357,23 +374,29 @@ export default function TDP() {
           />
         </div>
         <div className="tables-row">
-          <TableauEffectifAjout
-            titre={<span className="table-title">Effectif Prévu</span>}
-            specialties={specialties}
-            modeActuel={false}
-            onDataChange={handleEffectifChange}
-            data={effectif}
-            salles={salles}
-            moyenneSurfaceTheo={moyenneSurfaceTheo}
-          />
-          <TableauRepartitionAjout
-            titre={<span className="table-title">Répartition Prévue des heures</span>}
-            effectifData={effectif}
-            specialties={specialties}
-            onDataChange={handleRepartitionChange}
-            salles={salles}
-          />
-          <TableauResultats titre={<span className="table-title">Résultat</span>} data={resultatsData} salles={salles} />
+          {showEffectif && (
+            <TableauEffectifAjout
+              titre={<span className="table-title">Effectif Prévu</span>}
+              specialties={specialties}
+              modeActuel={false}
+              onDataChange={handleEffectifChange}
+              data={effectif}
+              salles={salles}
+              moyenneSurfaceTheo={moyenneSurfaceTheo}
+            />
+          )}
+          {showRepartition && (
+            <TableauRepartitionAjout
+              titre={<span className="table-title">Répartition Prévue des heures</span>}
+              effectifData={effectif}
+              specialties={specialties}
+              onDataChange={handleRepartitionChange}
+              salles={salles}
+            />
+          )}
+          {showResultats && (
+            <TableauResultats titre={<span className="table-title">Résultat</span>} data={resultatsData} salles={salles} />
+          )}
         </div>
       </div>
       <div className="tight-buttons flex flex-col md:flex-row flex-wrap justify-center">
