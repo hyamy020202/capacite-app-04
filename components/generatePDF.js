@@ -128,8 +128,12 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
     if (apprenantsSummary && apprenantsSummary.length > 0) {
       pdf.setFontSize(11);
       pdf.text('Synthèse des apprenants', 14, tableStartY);
-      const apprenantsHeader = ['Spécialité', 'Total groupes', 'Total apprenants'];
-      const apprenantsBody = apprenantsSummary.map(row => row.slice(0, 3));
+
+      // عدل العناوين وعدد الأعمدة حسب بنية apprenantsSummary في tdp
+      const apprenantsHeader = ['Spécialité', 'Groupes existants', 'Groupes ajoutés', 'Total groupes', 'Total apprenants'];
+      const apprenantsBody = apprenantsSummary.map(row => [
+        row[0], row[1], row[2], row[3], row[4]
+      ]);
       tableStartY += 4;
 
       const rowsCount = apprenantsBody.length + 1;

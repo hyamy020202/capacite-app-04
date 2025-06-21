@@ -253,8 +253,8 @@ export default function TDA() {
   const totalGroupes = somme(effectif.map(e => Number(e.groupes) || 0));
   const totalApprenants = somme(effectif.map(e => Number(e.apprenants) || 0));
   const apprenantsSummary = [
-    ...effectif.map(e => [e.specialite, e.groupes, e.apprenants, (Number(e.groupes) || 0) + (Number(e.apprenants) || 0)]),
-    ["Total", totalGroupes, totalApprenants, totalGroupes + totalApprenants]
+    ...effectif.map(e => [e.specialite, e.groupes, e.apprenants]),
+    ["Total", totalGroupes, totalApprenants]
   ];
 
   const resultatsData = {
