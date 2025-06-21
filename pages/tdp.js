@@ -303,17 +303,17 @@ export default function TDP() {
 
   const handleSave = () => {
     const data = { salles, effectif, repartition };
-    localStorage.setItem("tdaData", JSON.stringify(data));
+    localStorage.setItem("tdpData", JSON.stringify(data));
     alert("Les données ont été enregistrées !");
   };
 
   const handleReset = () => {
-    localStorage.removeItem("tdp-data");
+    localStorage.removeItem("tdpData");
     window.location.reload();
   };
 
   useEffect(() => {
-    const saved = localStorage.getItem("tdaData");
+    const saved = localStorage.getItem("tdpData");
     if (saved) {
       const parsed = JSON.parse(saved);
       setSalles({
