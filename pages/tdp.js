@@ -296,21 +296,9 @@ export default function TDP() {
   };
 
   const handleSave = () => {
-    try {
-      const data = {
-        salles,
-        cnos,
-        semaines,
-        heures,
-        apprenants,
-        effectif,
-        repartition,
-      };
-      localStorage.setItem("tdp-data", JSON.stringify(data));
-      alert("Les données ont été enregistrées !");
-    } catch (e) {
-      alert("Erreur lors de l'enregistrement des données.");
-    }
+    const data = { salles, effectif, repartition };
+    localStorage.setItem("tdaData", JSON.stringify(data));
+    alert("Les données ont été enregistrées !");
   };
 
   const handleReset = () => {
@@ -319,7 +307,7 @@ export default function TDP() {
   };
 
   useEffect(() => {
-    const saved = localStorage.getItem("tdp-data");
+    const saved = localStorage.getItem("tdaData");
     if (saved) {
       const parsed = JSON.parse(saved);
       setSalles({
@@ -329,11 +317,7 @@ export default function TDP() {
         tp2: parsed.salles?.tp2 || [defaultSalle(1.0, 72, 56)],
         tp3: parsed.salles?.tp3 || [defaultSalle(1.0, 72, 56)],
       });
-      setCnos(parsed.cnos || cnos);
-      setSemaines(parsed.semaines || semaines);
-      setHeures(parsed.heures || heures);
-      setApprenants(parsed.apprenants || apprenants);
-      setEffectif(parsed.effectif || effectif);
+      setEffectif(parsed.effectif || [{ specialite: "", groupes: 0, apprenants: 0 }]);
       setRepartition({
         besoinTheoTotal: parsed.repartition?.besoinTheoTotal ?? 0,
         besoinPratTotal: parsed.repartition?.besoinPratTotal ?? 0,
@@ -347,7 +331,6 @@ export default function TDP() {
         moyenneTp3: parsed.repartition?.moyenneTp3 ?? 0,
       });
     }
-    // eslint-disable-next-line
   }, []);
 
   return (
