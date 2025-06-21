@@ -370,15 +370,15 @@ export default function TDA() {
 
           {/* checkboxes الجديدة أسفل جداول القاعات وبنفس حجم الخط */}
           <div className="flex justify-center gap-6 mb-4 mt-2">
-            <label className="flex items-center gap-1 text-xs font-semibold text-gray-700">
+            <label className="flex items-center gap-1 text-xs text-gray-700 font-normal">
               <input type="checkbox" checked={showEffectif} onChange={() => setShowEffectif(v => !v)} />
               Effectif
             </label>
-            <label className="flex items-center gap-1 text-xs font-semibold text-gray-700">
+            <label className="flex items-center gap-1 text-xs text-gray-700 font-normal">
               <input type="checkbox" checked={showRepartition} onChange={() => setShowRepartition(v => !v)} />
               Répartition
             </label>
-            <label className="flex items-center gap-1 text-xs font-semibold text-gray-700">
+            <label className="flex items-center gap-1 text-xs text-gray-700 font-normal">
               <input type="checkbox" checked={showResultats} onChange={() => setShowResultats(v => !v)} />
               Résultat
             </label>
