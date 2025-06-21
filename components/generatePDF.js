@@ -74,7 +74,7 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
     const rectY = currentY - 10;
     const rectWidth = textWidth + 2 * paddingH;
     const rectHeight = 10 + 2 * paddingV;
-    pdf.roundedRect(rectX, rectY, rectWidth, rectHeight, 2, 2, 'S'); // 'S' = Stroke فقط (بدون تعبئة)
+    pdf.roundedRect(rectX, rectY, rectWidth, rectHeight, 1, 1, 'S'); // 'S' = Stroke فقط (بدون تعبئة)
     pdf.setTextColor(0, 0, 0);         // لون العنوان أسود
     pdf.text(title, pageWidth / 2, currentY, { align: 'center' });
     pdf.setTextColor(0, 0, 0);
