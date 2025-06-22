@@ -36,7 +36,17 @@ export default function Home() {
           className="mx-auto mb-4"
           style={{ width: 360, height: 60, objectFit: 'contain' }}
         />
-        <h1 className="text-lg md:text-xl font-bold text-gray-800 mb-6">
+        <h1
+    className="
+      text-lg sm:text-xl md:text-2xl font-bold text-center text-gray-800 mb-3
+      inline-block
+      px-6 py-2
+      border-2 border-black
+      rounded-xl
+      bg-white
+      shadow-sm
+    "
+  >
           Simulateur de Diagnostic de la Capacité d&apos;Accueil
         </h1>
 
