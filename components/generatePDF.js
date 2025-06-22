@@ -187,18 +187,16 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
       }
     }
 
-    // --- ملخص النتائج ---
+    // --- ملخص النتائج و Résultat Global جنبًا إلى جنب ---
     if (resultatsTable && resultatsTable.rows.length > 0) {
       pdf.setFontSize(11);
-      pdf.text('Synthèse des résultats', leftMargin, tableStartY);
-      tableStartY += 4;
 
-      // إزالة صف Résultat Global من الجدول
+      // إعداد بيانات جدول النتائج
+      const resultsHead = [resultatsTable.columns.slice(0, 4)];
       const rowsSansGlobal = resultatsTable.rows.filter(
         row => !(row[0] && typeof row[0] === "object" && row[0].value === "Résultat Global")
       );
-
-      const body = rowsSansGlobal.map((row) =>
+      const resultsBody = rowsSansGlobal.map((row) =>
         row.map((cell, colIdx) => {
           if (colIdx === 3) {
             const isExcedent = cell === 'Excédent';
@@ -216,22 +214,35 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
         })
       );
 
-      autoTable(pdf, {
-        startY: tableStartY,
-        head: [resultatsTable.columns.slice(0, 4)],
-        body: body,
-        styles: { fontSize: 9, halign: 'center', valign: 'middle', cellWidth: 'wrap', wordBreak: 'normal' },
-        theme: 'grid',
-        headStyles: { fillColor: [155, 89, 182] },
-        margin: { left: leftMargin, right: leftMargin },
-        tableWidth: tableWidth
-      });
-      tableStartY = pdf.lastAutoTable.finalY + 2; // تقليل المسافة بعد الجدول
-
-      // --- Résultat Global مباشرة بعد الجدول ---
+      // إعداد بيانات Résultat Global
       const globalRow = resultatsTable.rows.find(
         row => row[0] && typeof row[0] === "object" && row[0].value === "Résultat Global"
       );
+
+      // إعداد مكان الجدولين جنبًا إلى جنب
+      const resultsTableWidth = tableWidth;
+      const globalTableWidth = tableWidth / 1.5; // أصغر قليلاً
+      const resultsMargin = 14;
+      const globalMargin = pageWidth / 2 + 6;
+
+      // رسم عنواني الجدولين
+      pdf.text('Synthèse des résultats', resultsMargin, tableStartY - 2);
+      pdf.text('Résultat Global', globalMargin, tableStartY - 2);
+
+      // رسم جدول النتائج (يسار)
+      autoTable(pdf, {
+        startY: tableStartY,
+        head: resultsHead,
+        body: resultsBody,
+        styles: { fontSize: 9, halign: 'center', valign: 'middle', cellWidth: 'wrap', wordBreak: 'normal' },
+        theme: 'grid',
+        headStyles: { fillColor: [155, 89, 182] },
+        margin: { left: resultsMargin },
+        tableWidth: resultsTableWidth
+      });
+      const resultsTableFinalY = pdf.lastAutoTable.finalY;
+
+      // رسم جدول Résultat Global (يمين)
       if (globalRow) {
         const isExcedent = globalRow[1] === 'Excédent';
         const bgColor = isExcedent ? [39, 174, 96] : [231, 76, 60];
@@ -245,16 +256,12 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
         let selectedPercent = '';
         if (percents.length) {
           if (isExcedent) {
-            // في حالة الفائض: الأقرب للصفر (أصغر قيمة مطلقة)
             selectedPercent = percents.reduce((min, p) => p.abs < min.abs ? p : min, percents[0]).raw;
           } else {
-            // في حالة التجاوز/العجز: الأبعد عن الصفر (أكبر قيمة مطلقة)
             selectedPercent = percents.reduce((max, p) => p.abs > max.abs ? p : max, percents[0]).raw;
           }
-          // أزل العلامة ليظهر الرقم قيمة مطلقة فقط
           selectedPercent = selectedPercent.replace(/^[+-]/, "");
         } else {
-          // fallback على نسبة Résultat Global الأصلية (بدون علامة)
           selectedPercent = globalRow[2] ? globalRow[2].replace(/^[+-]/, "") : '';
         }
 
@@ -264,33 +271,30 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
         pdf.setFontSize(fontSize);
         pdf.setFont("helvetica", "bold");
 
-        const w1 = pdf.getTextWidth(label) + 10;
-        const w2 = pdf.getTextWidth(resultText) + 12;
-        const startY = tableStartY + 4;
-
         autoTable(pdf, {
-          startY,
+          startY: tableStartY,
           body: [
             [
-              { content: label, styles: { halign: 'center', fontStyle: 'bold', fontSize, cellWidth: w1, textColor: [0,0,0], fillColor: [255,255,255], lineWidth: 0 } },
-              { content: resultText, styles: { halign: 'center', fontStyle: 'bold', fontSize, cellWidth: w2, textColor: [255,255,255], fillColor: bgColor, lineWidth: 0 } }
+              { content: label, styles: { halign: 'center', fontStyle: 'bold', fontSize, textColor: [0,0,0], fillColor: [255,255,255], lineWidth: 0 } },
+              { content: resultText, styles: { halign: 'center', fontStyle: 'bold', fontSize, textColor: [255,255,255], fillColor: bgColor, lineWidth: 0 } }
             ]
           ],
-          theme: 'plain',
+          theme: 'grid',
           styles: {
-            cellPadding: { top: 2, right: 4, bottom: 2, left: 4 },
+            cellPadding: { top: 4, right: 6, bottom: 4, left: 6 },
             valign: 'middle',
-            font: "helvetica"
+            font: "helvetica",
+            fontSize: 9
           },
           head: [],
-          margin: { left: leftMargin },
-          didDrawCell: (data) => {
-            // لا شيء إضافي
-          }
+          margin: { left: globalMargin },
+          tableWidth: globalTableWidth
         });
-
-        tableStartY = pdf.lastAutoTable.finalY + 6;
       }
+      const globalTableFinalY = pdf.lastAutoTable.finalY;
+
+      // تحديث Y بعد الجدولين
+      tableStartY = Math.max(resultsTableFinalY, globalTableFinalY) + 10;
 
       // --- النص التوضيحي أسفل النتائج ---
       pdf.setFontSize(10);
