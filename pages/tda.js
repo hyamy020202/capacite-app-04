@@ -237,7 +237,7 @@ export default function TDA() {
     percentGlobal
   ]);
   const resultatsTable = {
-    columns: ["Type", "Heures restantes", "Apprenants possibles", "État", "Niveau"],
+    columns: ["Type", "Heures rest.", "Marge App.", "État", "Niveau"],
     rows: resultatsRows
   };
 
