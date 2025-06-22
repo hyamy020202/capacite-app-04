@@ -445,12 +445,6 @@ export default function TDA() {
           ↩️ Accueil
         </button>
         <button
-          onClick={() => generatePDF({ sallesSummary, apprenantsSummary, resultatsTable })}
-          className="bg-green-600 hover:bg-green-700 text-white shadow"
-        >
-          📄 Rapport
-        </button>
-        <button
           onClick={handleSave}
           className="bg-yellow-500 hover:bg-yellow-600 text-white shadow"
         >
@@ -467,6 +461,12 @@ export default function TDA() {
           className="bg-indigo-600 hover:bg-indigo-700 text-white shadow"
         >
           🖨️ Imprimer
+        </button>
+        <button
+          onClick={() => generatePDF({ sallesSummary, apprenantsSummary, resultatsTable })}
+          className="bg-green-600 hover:bg-green-700 text-white shadow"
+        >
+          📄 Rapport
         </button>
       </div>
     </div>
