@@ -66,7 +66,7 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
       { align: 'center' }
     );
     pdf.setTextColor(0, 0, 0); // إعادة اللون للأسود لما بعده
-    currentY += 13;
+    currentY += 16;
 
     // --- إطار العنوان الرئيسي ---
     const title = "Rapport de diagnostic de la capacité d'accueil";
