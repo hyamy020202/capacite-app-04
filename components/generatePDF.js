@@ -130,7 +130,8 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
         theme: 'grid',
         headStyles: { fillColor: [41, 128, 185] },
         margin: { left: sallesMargin },
-        tableWidth: singleTableWidth
+        tableWidth: singleTableWidth,
+        pageBreak: 'avoid'
       });
       sallesTableFinalY = pdf.lastAutoTable.finalY;
 
@@ -143,7 +144,8 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
         theme: 'grid',
         headStyles: { fillColor: [255, 165, 0] },
         margin: { left: apprenantsMargin },
-        tableWidth: singleTableWidth
+        tableWidth: singleTableWidth,
+        pageBreak: 'avoid'
       });
       apprenantsTableFinalY = pdf.lastAutoTable.finalY;
 
@@ -164,7 +166,8 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
           theme: 'grid',
           headStyles: { fillColor: [41, 128, 185] },
           margin: { left: leftMargin, right: leftMargin },
-          tableWidth: tableWidth
+          tableWidth: tableWidth,
+          pageBreak: 'avoid'
         });
         tableStartY = pdf.lastAutoTable.finalY + 10;
       }
@@ -183,7 +186,8 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
           theme: 'grid',
           headStyles: { fillColor: [255, 165, 0] },
           margin: { left: leftMargin, right: leftMargin },
-          tableWidth: tableWidth
+          tableWidth: tableWidth,
+          pageBreak: 'avoid'
         });
         tableStartY = pdf.lastAutoTable.finalY + 10;
       }
@@ -239,7 +243,8 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
         theme: 'grid',
         headStyles: { fillColor: [155, 89, 182] },
         margin: { left: resultsMargin },
-        tableWidth: resultsTableWidth
+        tableWidth: resultsTableWidth,
+        pageBreak: 'avoid'
       });
       const resultsTableFinalY = pdf.lastAutoTable.finalY;
 
@@ -303,17 +308,30 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
       tableStartY = Math.max(resultsTableFinalY, globalTableFinalY) + 10;
 
       // --- النص التوضيحي أسفل النتائج ---
-      pdf.setFontSize(10);
-      pdf.setTextColor(80);
-      pdf.setFont(undefined, 'normal');
-      pdf.text(
+      // حساب ارتفاع النص التوضيحي
+      const remarqueText =
         "Remarques:\n" +
         "1. Ce rapport propose une estimation diagnostique de la capacité d'accueil, basée sur les données saisies. C'est un outil d'aide à la décision pour optimiser la planification, et non une validation définitive.\n" +
         "2. Les résultats de l'étude précitée demeurent tributaires de la disponibilité des éléments suivants :\n" +
         "- Équipe de formateurs adéquate aux groupes et spécialités.\n" +
         "- Certificat de prévention des risques de la Protection Civile.\n" +
         "- Voies de circulation et système de ventilation adéquats\n" +
-        "- Équipements nécessaires selon la spécificité des spécialités",
+        "- Équipements nécessaires selon la spécificité des spécialités";
+
+      // تقدير ارتفاع النص (كل سطر تقريباً 6مم)
+      const remarqueLines = remarqueText.split('\n').length;
+      const remarqueHeight = remarqueLines * 6 + 4;
+      // إذا لم يبق مكان كافٍ للنص في الصفحة، أضف صفحة جديدة
+      if (pageHeight - tableStartY < remarqueHeight + 10) {
+        pdf.addPage();
+        tableStartY = 20;
+      }
+
+      pdf.setFontSize(10);
+      pdf.setTextColor(80);
+      pdf.setFont(undefined, 'normal');
+      pdf.text(
+        remarqueText,
         14,
         tableStartY,
         { maxWidth: pageWidth - 28, align: 'left' }
