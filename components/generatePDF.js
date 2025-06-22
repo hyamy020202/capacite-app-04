@@ -117,7 +117,13 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
         styles: { fontSize: 9 },
         theme: 'grid',
         headStyles: { fillColor: [41, 128, 185] },
-        margin: { left: 14, right: 14 },
+        margin: { left: leftMargin, right: leftMargin },
+        columnStyles: {
+          0: { cellWidth: tableWidth / 4 },
+          1: { cellWidth: tableWidth / 4 },
+          2: { cellWidth: tableWidth / 4 },
+          3: { cellWidth: tableWidth / 4 }
+        }
       });
       tableStartY = pdf.lastAutoTable.finalY + 10;
     } else {
@@ -148,7 +154,12 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
         styles: { fontSize: 9 },
         theme: 'grid',
         headStyles: { fillColor: [255, 165, 0] },
-        margin: { left: 14, right: 14 },
+        margin: { left: leftMargin, right: leftMargin },
+        columnStyles: {
+          0: { cellWidth: tableWidth / 3 },
+          1: { cellWidth: tableWidth / 3 },
+          2: { cellWidth: tableWidth / 3 }
+        }
       });
       tableStartY = pdf.lastAutoTable.finalY + 10;
     } else {
@@ -191,7 +202,13 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
         styles: { fontSize: 9, halign: 'center', valign: 'middle' },
         theme: 'grid',
         headStyles: { fillColor: [155, 89, 182] },
-        margin: { left: 14, right: 14 },
+        margin: { left: leftMargin, right: leftMargin },
+        columnStyles: {
+          0: { cellWidth: tableWidth / 4 },
+          1: { cellWidth: tableWidth / 4 },
+          2: { cellWidth: tableWidth / 4 },
+          3: { cellWidth: tableWidth / 4 }
+        }
       });
       tableStartY = pdf.lastAutoTable.finalY + 2; // تقليل المسافة بعد الجدول
 
@@ -233,7 +250,8 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
 
         const w1 = pdf.getTextWidth(label) + 10;
         const w2 = pdf.getTextWidth(resultText) + 12;
-        const tableWidth = w1 + w2;
+        const tableWidth = 180; // يمكنك التعديل حسب ما يناسب الصفحة
+        const leftMargin = (pageWidth - tableWidth) / 2;
         const startY = tableStartY + 4;
 
         autoTable(pdf, {
@@ -251,7 +269,7 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
             font: "helvetica"
           },
           head: [],
-          margin: { left: (pageWidth - tableWidth) / 2 },
+          margin: { left: leftMargin },
           didDrawCell: (data) => {
             // لا شيء إضافي
           }
