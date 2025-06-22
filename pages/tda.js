@@ -440,7 +440,7 @@ export default function TDA() {
       <div className="tight-buttons flex flex-col md:flex-row flex-wrap justify-center">
         <button
           onClick={() => window.location.href = "/"}
-          className="bg-blue-600 hover:bg-blue-700 text-white shadow"
+          className="bg-blue-500 hover:bg-blue-700 text-white shadow"
         >
           ↩️ Accueil
         </button>
@@ -452,19 +452,19 @@ export default function TDA() {
         </button>
         <button
           onClick={handleReset}
-          className="bg-red-600 hover:bg-red-700 text-white shadow"
+          className="bg-red-500 hover:bg-red-700 text-white shadow"
         >
           🗑️ Réinitialiser
         </button>
         <button
           onClick={() => window.print()}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white shadow"
+          className="bg-purple-500 hover:bg-indigo-700 text-white shadow"
         >
           🖨️ Imprimer
         </button>
         <button
           onClick={() => generatePDF({ sallesSummary, apprenantsSummary, resultatsTable })}
-          className="bg-green-600 hover:bg-green-700 text-white shadow"
+          className="bg-green-500 hover:bg-green-700 text-white shadow"
         >
           📄 Rapport
         </button>
