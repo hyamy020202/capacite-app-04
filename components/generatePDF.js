@@ -98,67 +98,92 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
       return (pageHeight - tableStartY) >= requiredHeight;
     }
 
-    // --- ملخص القاعات ---
-    if (sallesSummary && sallesSummary.length > 0) {
+    // --- ملخص القاعات وملخص المتعلمين جنبًا إلى جنب ---
+    let sallesTableFinalY = tableStartY;
+    let apprenantsTableFinalY = tableStartY;
+    if (sallesSummary && sallesSummary.length > 0 && apprenantsSummary && apprenantsSummary.length > 0) {
       pdf.setFontSize(11);
-      pdf.text('Synthèse des salles', leftMargin, tableStartY);
-      tableStartY += 4;
 
-      // حساب ارتفاع الجدول تقريبا
-      const rowsCount = sallesSummary.length + 1; // +1 للرأس
-      const approxRowHeight = 7; // تقديري لكل صف
-      const requiredHeight = rowsCount * approxRowHeight + 10;
+      // إعداد رؤوس وأجسام الجداول
+      const sallesHead = [['Type', 'Nombre', 'Moy. surf. pédag.', 'heures max']];
+      const apprenantsHead = [['Spécialité', 'Total gr.', 'Total appr.']];
+      const apprenantsBody = apprenantsSummary.map(row => row.slice(0, 3));
 
-      if (!hasSpaceForTable(requiredHeight)) {
-        pdf.addPage();
-        tableStartY = 20; // بداية رسم جديد في صفحة جديدة
-      }
+      // عرض كل جدول (نصف الجدول الكلي)
+      const singleTableWidth = tableWidth;
+      const sallesMargin = leftMargin;
+      const apprenantsMargin = leftMargin + singleTableWidth + 4; // مسافة صغيرة بين الجدولين
 
+      // رسم عنواني الجدولين
+      pdf.text('Synthèse des salles', sallesMargin, tableStartY - 2);
+      pdf.text('Synthèse des apprenants', apprenantsMargin, tableStartY - 2);
+
+      // رسم جدول القاعات (يسار)
       autoTable(pdf, {
         startY: tableStartY,
-        head: [['Type', 'Nombre', 'Moy. surf. pédag.', 'heures max']],
+        head: sallesHead,
         body: sallesSummary,
         styles: { fontSize: 9, cellWidth: 'wrap', wordBreak: 'normal' },
         theme: 'grid',
         headStyles: { fillColor: [41, 128, 185] },
-        margin: { left: leftMargin, right: leftMargin },
-        tableWidth: tableWidth // يحدد عرض الجدول الكلي
+        margin: { left: sallesMargin },
+        tableWidth: singleTableWidth
       });
-      tableStartY = pdf.lastAutoTable.finalY + 10;
-    } else {
-      console.warn('⚠️ لم يتم العثور على بيانات ملخص القاعات.');
-    }
+      sallesTableFinalY = pdf.lastAutoTable.finalY;
 
-    // --- ملخص المتعلمين ---
-    if (apprenantsSummary && apprenantsSummary.length > 0) {
-      pdf.setFontSize(11);
-      pdf.text('Synthèse des apprenants', leftMargin, tableStartY);
-      const apprenantsHeader = ['Spécialité', 'Total gr.', 'Total appr.'];
-      const apprenantsBody = apprenantsSummary.map(row => row.slice(0, 3));
-      tableStartY += 4;
-
-      const rowsCount = apprenantsBody.length + 1;
-      const approxRowHeight = 7;
-      const requiredHeight = rowsCount * approxRowHeight + 10;
-
-      if (!hasSpaceForTable(requiredHeight)) {
-        pdf.addPage();
-        tableStartY = 20;
-      }
-
+      // رسم جدول المتعلمين (يمين)
       autoTable(pdf, {
         startY: tableStartY,
-        head: [apprenantsHeader],
+        head: apprenantsHead,
         body: apprenantsBody,
         styles: { fontSize: 9, cellWidth: 'wrap', wordBreak: 'normal' },
         theme: 'grid',
         headStyles: { fillColor: [255, 165, 0] },
-        margin: { left: leftMargin, right: leftMargin },
-        tableWidth: tableWidth
+        margin: { left: apprenantsMargin },
+        tableWidth: singleTableWidth
       });
-      tableStartY = pdf.lastAutoTable.finalY + 10;
+      apprenantsTableFinalY = pdf.lastAutoTable.finalY;
+
+      // تحديث Y بعد الجدولين
+      tableStartY = Math.max(sallesTableFinalY, apprenantsTableFinalY) + 10;
     } else {
-      console.warn('⚠️ لم يتم العثور على بيانات ملخص المتعلمين.');
+      // إذا لم تتوفر بيانات أحد الجدولين، اعرض كل جدول بشكل منفصل كما في السابق
+      if (sallesSummary && sallesSummary.length > 0) {
+        pdf.setFontSize(11);
+        pdf.text('Synthèse des salles', leftMargin, tableStartY);
+        tableStartY += 4;
+
+        autoTable(pdf, {
+          startY: tableStartY,
+          head: [['Type', 'Nombre', 'Moy. surf. pédag.', 'heures max']],
+          body: sallesSummary,
+          styles: { fontSize: 9, cellWidth: 'wrap', wordBreak: 'normal' },
+          theme: 'grid',
+          headStyles: { fillColor: [41, 128, 185] },
+          margin: { left: leftMargin, right: leftMargin },
+          tableWidth: tableWidth
+        });
+        tableStartY = pdf.lastAutoTable.finalY + 10;
+      }
+      if (apprenantsSummary && apprenantsSummary.length > 0) {
+        pdf.setFontSize(11);
+        pdf.text('Synthèse des apprenants', leftMargin, tableStartY);
+        const apprenantsHeader = ['Spécialité', 'Total gr.', 'Total appr.'];
+        const apprenantsBody = apprenantsSummary.map(row => row.slice(0, 3));
+        tableStartY += 4;
+
+        autoTable(pdf, {
+          startY: tableStartY,
+          head: [apprenantsHeader],
+          body: apprenantsBody,
+          styles: { fontSize: 9, cellWidth: 'wrap', wordBreak: 'normal' },
+          theme: 'grid',
+          headStyles: { fillColor: [255, 165, 0] },
+          margin: { left: leftMargin, right: leftMargin },
+          tableWidth: tableWidth
+        });
+        tableStartY = pdf.lastAutoTable.finalY + 10;
+      }
     }
 
     // --- ملخص النتائج ---
