@@ -462,6 +462,12 @@ export default function TDA() {
         >
           🗑️ Réinitialiser
         </button>
+        <button
+          onClick={() => window.print()}
+          className="bg-indigo-600 hover:bg-indigo-700 text-white shadow"
+        >
+          🖨️ Imprimer
+        </button>
       </div>
     </div>
   );
