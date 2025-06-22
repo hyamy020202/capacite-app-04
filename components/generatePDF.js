@@ -30,6 +30,10 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
   const pageWidth = pdf.internal.pageSize.getWidth();
   const pageHeight = pdf.internal.pageSize.getHeight();
 
+  // --- إعداد عرض الجداول وهامشها ---
+  const tableWidth = 180;
+  const leftMargin = (pageWidth - tableWidth) / 2;
+
   // --- التاريخ والتوقيت أعلى الصفحة على اليمين ---
   const dateTime = new Date().toLocaleString('fr-FR', {
     year: 'numeric',
@@ -250,11 +254,8 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
 
         const w1 = pdf.getTextWidth(label) + 10;
         const w2 = pdf.getTextWidth(resultText) + 12;
-        const tableWidth = 180; // عرفه مرة واحدة في الأعلى
-        const leftMargin = (pageWidth - tableWidth) / 2;
         const startY = tableStartY + 4;
 
-        // داخل Résultat Global
         autoTable(pdf, {
           startY,
           body: [
