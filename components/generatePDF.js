@@ -31,8 +31,7 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
   const pageHeight = pdf.internal.pageSize.getHeight();
 
   // --- إعداد عرض الجداول وهامشها ---
-  const tableWidth = 90; // كان 180
-  const leftMargin = (pageWidth - tableWidth) / 2;
+  const leftMargin = 20; // هامش ثابت فقط
 
   // --- التاريخ والتوقيت أعلى الصفحة على اليمين ---
   const dateTime = new Date().toLocaleString('fr-FR', {
@@ -118,16 +117,10 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
         startY: tableStartY,
         head: [['Type', 'Nombre', 'Moy. surf. pédag.', 'heures max']],
         body: sallesSummary,
-        styles: { fontSize: 9 },
+        styles: { fontSize: 9, cellWidth: 'wrap', wordBreak: 'normal' },
         theme: 'grid',
         headStyles: { fillColor: [41, 128, 185] },
-        margin: { left: leftMargin, right: leftMargin },
-        columnStyles: {
-          0: { cellWidth: tableWidth / 4 },
-          1: { cellWidth: tableWidth / 4 },
-          2: { cellWidth: tableWidth / 4 },
-          3: { cellWidth: tableWidth / 4 }
-        }
+        margin: { left: leftMargin, right: leftMargin }
       });
       tableStartY = pdf.lastAutoTable.finalY + 10;
     } else {
@@ -155,15 +148,10 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
         startY: tableStartY,
         head: [apprenantsHeader],
         body: apprenantsBody,
-        styles: { fontSize: 9 },
+        styles: { fontSize: 9, cellWidth: 'wrap', wordBreak: 'normal' },
         theme: 'grid',
         headStyles: { fillColor: [255, 165, 0] },
-        margin: { left: leftMargin, right: leftMargin },
-        columnStyles: {
-          0: { cellWidth: tableWidth / 3 },
-          1: { cellWidth: tableWidth / 3 },
-          2: { cellWidth: tableWidth / 3 }
-        }
+        margin: { left: leftMargin, right: leftMargin }
       });
       tableStartY = pdf.lastAutoTable.finalY + 10;
     } else {
@@ -203,16 +191,10 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
         startY: tableStartY,
         head: [resultatsTable.columns.slice(0, 4)],
         body: body,
-        styles: { fontSize: 9, halign: 'center', valign: 'middle' },
+        styles: { fontSize: 9, halign: 'center', valign: 'middle', cellWidth: 'wrap', wordBreak: 'normal' },
         theme: 'grid',
         headStyles: { fillColor: [155, 89, 182] },
-        margin: { left: leftMargin, right: leftMargin },
-        columnStyles: {
-          0: { cellWidth: tableWidth / 4 },
-          1: { cellWidth: tableWidth / 4 },
-          2: { cellWidth: tableWidth / 4 },
-          3: { cellWidth: tableWidth / 4 }
-        }
+        margin: { left: leftMargin, right: leftMargin }
       });
       tableStartY = pdf.lastAutoTable.finalY + 2; // تقليل المسافة بعد الجدول
 
