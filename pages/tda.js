@@ -133,16 +133,16 @@ export default function TDA() {
     heuresRestantesTheo, repartition.moyenneTheo, moyenneSurfaceTheo
   );
   const apprenantsPossiblesPrat = calculerApprenantsPossibles(
-    heuresRestantesPrat, repartition.moyennePrat, moyenneSurfacePrat
+    heuresRestantesPrat, repartition.moyennePrat, moyenneSurfaceTheo
   );
   const apprenantsPossiblesTpSpec = calculerApprenantsPossibles(
-    heuresRestantesTpSpec, repartition.moyenneTpSpec, moyenneSurfaceTpSpec
+    heuresRestantesTpSpec, repartition.moyenneTpSpec, moyenneSurfaceTheo
   );
   const apprenantsPossiblesTp2 = calculerApprenantsPossibles(
-    heuresRestantesTp2, repartition.moyenneTp2, moyenneSurfaceTp2
+    heuresRestantesTp2, repartition.moyenneTp2, moyenneSurfaceTheo
   );
   const apprenantsPossiblesTp3 = calculerApprenantsPossibles(
-    heuresRestantesTp3, repartition.moyenneTp3, moyenneSurfaceTp3
+    heuresRestantesTp3, repartition.moyenneTp3, moyenneSurfaceTheo
   );
 
   const etatTheo = determinerEtat(heuresRestantesTheo);

@@ -42,25 +42,11 @@ export function calculerHeuresRestantes(sommeHeuresMax, sommeBesoinParSpecialite
   return parseFloat((a - b).toFixed(2));
 }
 
-export function calculerApprenantsPossibles(heuresRestantes, moyenneBesoinParGroupe, salles) {
+export function calculerApprenantsPossibles(heuresRestantes, moyenneBesoinParGroupe, moyenneSurfacePedagogique) {
   const h = Number(heuresRestantes);
   const m = Number(moyenneBesoinParGroupe);
-
-  // حساب متوسط المساحة البيداغوجية للقاعات النظرية
-  let s = 0;
-  if (Array.isArray(salles) && salles.length > 0) {
-    const surfaces = salles
-      .map(salle => Number(salle.surfaceP))
-      .filter(val => typeof val === 'number' && !isNaN(val));
-    if (surfaces.length > 0) {
-      s = surfaces.reduce((acc, curr) => acc + curr, 0) / surfaces.length;
-    }
-  }
-
-  if (isNaN(h) || isNaN(m) || isNaN(s) || m === 0 || s === 0) {
-    console.warn("Invalid input detected. Returning 0.");
-    return 0;
-  }
+  const s = Number(moyenneSurfacePedagogique);
+  if (isNaN(h) || isNaN(m) || isNaN(s) || m === 0) return 0;
   return Math.round((h / m) * s);
 }
 
