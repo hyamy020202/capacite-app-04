@@ -429,19 +429,19 @@ export default function TDA() {
           onClick={() => window.location.href = "/"}
           className="bg-blue-600 hover:bg-blue-700 text-white shadow"
         >
-          ↩️ Page d&apos;accueil
+          ↩️ Accueil
         </button>
         <button
           onClick={() => generatePDF({ sallesSummary, apprenantsSummary, resultatsTable })}
           className="bg-green-600 hover:bg-green-700 text-white shadow"
         >
-          📄 Générer PDF
+          📄 Rapport
         </button>
         <button
           onClick={handleSave}
           className="bg-yellow-500 hover:bg-yellow-600 text-white shadow"
         >
-          💾 Enregistrer modifications
+          💾 Enregistrer
         </button>
         <button
           onClick={handleReset}
