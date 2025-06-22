@@ -58,12 +58,14 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
 
     // --- النص تحت الشعار ---
     pdf.setFontSize(7);
+    pdf.setTextColor(52, 152, 219); // أزرق سماوي
     pdf.text(
       "Direction Générale de l'Inspection et de l'Audit Pédagogique",
       pageWidth / 2,
       currentY,
       { align: 'center' }
     );
+    pdf.setTextColor(0, 0, 0); // إعادة اللون للأسود لما بعده
     currentY += 13;
 
     // --- إطار العنوان الرئيسي ---
