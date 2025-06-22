@@ -112,8 +112,8 @@ export default function TableauResultats({ data, titre }) {
           <thead>
             <tr>
               <th>Type</th>
-              <th>Heures<br />restantes</th>
-              <th>Apprenants<br />possibles</th>
+              <th>Heures<br />rest.</th>
+              <th>Marge<br />App.</th>
               <th>État</th>
             </tr>
           </thead>
