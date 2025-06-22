@@ -111,8 +111,9 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
 
       // عرض كل جدول (نصف الجدول الكلي)
       const singleTableWidth = tableWidth;
-      const sallesMargin = leftMargin;
-      const apprenantsMargin = leftMargin + singleTableWidth + 4; // مسافة صغيرة بين الجدولين
+      // اجعل كل جدول في ربع الصفحة تقريبًا مع هامش ثابت
+      const sallesMargin = 14;
+      const apprenantsMargin = pageWidth / 2 + 6; // 6mm هامش صغير بين الجدولين
 
       // رسم عنواني الجدولين
       pdf.text('Synthèse des salles', sallesMargin, tableStartY - 2);
