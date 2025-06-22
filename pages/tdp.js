@@ -348,7 +348,17 @@ export default function TDP() {
   return (
     <div className="min-h-screen bg-gray-100 p-2 sm:p-3 md:p-4">
       <div ref={pdfRef}>
-        <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-center text-gray-800 mb-3">
+        <h1
+          className="
+            text-lg sm:text-xl md:text-2xl font-bold text-center text-gray-800 mb-3
+            inline-block
+            px-6 py-2
+            border-2 border-black
+            rounded-xl
+            bg-white
+            shadow-sm
+          "
+        >
           Simulateur de l&apos;état prévu
         </h1>
         <div className="flex flex-col lg:flex-row gap-4 flex-wrap mb-3">
