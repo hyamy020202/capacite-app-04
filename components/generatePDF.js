@@ -116,7 +116,7 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
 
       autoTable(pdf, {
         startY: tableStartY,
-        head: [['Type de salle', 'Nombre de salles', 'Moy. surface pédagogique', 'Nb max heures disponibles']],
+        head: [['Type', 'Nombre', 'Moy. surf. pédag.', 'heures max']],
         body: sallesSummary,
         styles: { fontSize: 9 },
         theme: 'grid',
@@ -138,7 +138,7 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
     if (apprenantsSummary && apprenantsSummary.length > 0) {
       pdf.setFontSize(11);
       pdf.text('Synthèse des apprenants', 14, tableStartY);
-      const apprenantsHeader = ['Spécialité', 'Total groupes', 'Total apprenants'];
+      const apprenantsHeader = ['Spécialité', 'Total gr.', 'Total appr.'];
       const apprenantsBody = apprenantsSummary.map(row => row.slice(0, 3));
       tableStartY += 4;
 
