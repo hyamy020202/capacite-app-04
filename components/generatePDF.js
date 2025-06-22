@@ -221,13 +221,12 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
 
       // إعداد مكان الجدولين جنبًا إلى جنب
       const resultsTableWidth = tableWidth;
-      const globalTableWidth = tableWidth / 1.5; // أصغر قليلاً
+      const globalTableWidth = tableWidth; // نفس عرض الجدول الأول
       const resultsMargin = 14;
-      const globalMargin = pageWidth / 2 + 6;
+      const globalMargin = pageWidth / 2 + 1; // بدون انتقاص من عرض الجدول الأول
 
-      // رسم عنواني الجدولين
+      // رسم عنوان جدول النتائج فقط (بدون عنوان Résultat Global)
       pdf.text('Synthèse des résultats', resultsMargin, tableStartY - 2);
-      pdf.text('Résultat Global', globalMargin, tableStartY - 2);
 
       // رسم جدول النتائج (يسار)
       autoTable(pdf, {
@@ -243,6 +242,7 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
       const resultsTableFinalY = pdf.lastAutoTable.finalY;
 
       // رسم جدول Résultat Global (يمين)
+      let globalTableFinalY = tableStartY;
       if (globalRow) {
         const isExcedent = globalRow[1] === 'Excédent';
         const bgColor = isExcedent ? [39, 174, 96] : [231, 76, 60];
@@ -271,12 +271,16 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
         pdf.setFontSize(fontSize);
         pdf.setFont("helvetica", "bold");
 
+        // حساب عرض الأعمدة تلقائياً حسب النص
+        const w1 = pdf.getTextWidth(label) + 16;
+        const w2 = pdf.getTextWidth(resultText) + 20;
+
         autoTable(pdf, {
           startY: tableStartY,
           body: [
             [
-              { content: label, styles: { halign: 'center', fontStyle: 'bold', fontSize, textColor: [0,0,0], fillColor: [255,255,255], lineWidth: 0 } },
-              { content: resultText, styles: { halign: 'center', fontStyle: 'bold', fontSize, textColor: [255,255,255], fillColor: bgColor, lineWidth: 0 } }
+              { content: label, styles: { halign: 'center', fontStyle: 'bold', fontSize, cellWidth: w1, textColor: [0,0,0], fillColor: [255,255,255], lineWidth: 0 } },
+              { content: resultText, styles: { halign: 'center', fontStyle: 'bold', fontSize, cellWidth: w2, textColor: [255,255,255], fillColor: bgColor, lineWidth: 0 } }
             ]
           ],
           theme: 'grid',
@@ -288,10 +292,10 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
           },
           head: [],
           margin: { left: globalMargin },
-          tableWidth: globalTableWidth
+          tableWidth: w1 + w2 // عرض الجدول يساوي مجموع عرض العمودين
         });
+        globalTableFinalY = pdf.lastAutoTable.finalY;
       }
-      const globalTableFinalY = pdf.lastAutoTable.finalY;
 
       // تحديث Y بعد الجدولين
       tableStartY = Math.max(resultsTableFinalY, globalTableFinalY) + 10;
