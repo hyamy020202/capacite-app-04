@@ -31,7 +31,7 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
   const pageHeight = pdf.internal.pageSize.getHeight();
 
   // --- إعداد عرض الجداول وهامشها ---
-  const tableWidth = 180;
+  const tableWidth = 90; // كان 180
   const leftMargin = (pageWidth - tableWidth) / 2;
 
   // --- التاريخ والتوقيت أعلى الصفحة على اليمين ---
