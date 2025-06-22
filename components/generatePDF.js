@@ -250,10 +250,11 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
 
         const w1 = pdf.getTextWidth(label) + 10;
         const w2 = pdf.getTextWidth(resultText) + 12;
-        const tableWidth = 180; // يمكنك التعديل حسب ما يناسب الصفحة
+        const tableWidth = 180; // عرفه مرة واحدة في الأعلى
         const leftMargin = (pageWidth - tableWidth) / 2;
         const startY = tableStartY + 4;
 
+        // داخل Résultat Global
         autoTable(pdf, {
           startY,
           body: [
@@ -262,7 +263,7 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
               { content: resultText, styles: { halign: 'center', fontStyle: 'bold', fontSize, cellWidth: w2, textColor: [255,255,255], fillColor: bgColor, lineWidth: 0 } }
             ]
           ],
-          theme: 'plain', // لا أطر
+          theme: 'plain',
           styles: {
             cellPadding: { top: 2, right: 4, bottom: 2, left: 4 },
             valign: 'middle',
