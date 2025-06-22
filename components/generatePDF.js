@@ -64,9 +64,9 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
 
     // --- إطار العنوان الرئيسي ---
     const title = "Rapport de diagnostic de la capacité d'accueil";
-    const paddingH = 5;
-    const paddingV = 3;
-    pdf.setFontSize(15);
+    const paddingH = 4; // هوامش أفقية أقل
+    const paddingV = 2; // هوامش عمودية أقل
+    pdf.setFontSize(13); // حجم خط أصغر
     pdf.setDrawColor(0, 0, 0);         // إطار أسود
     pdf.setFillColor(255, 255, 255);   // خلفية بيضاء (بدون لون)
     const textWidth = pdf.getTextWidth(title);
