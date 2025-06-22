@@ -64,21 +64,20 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
 
     // --- عنوان رئيسي مطابق للصفحة الرئيسية ---
     const title = "Rapport de Diagnostic de la Capacité d'Accueil";
-    pdf.setFont("helvetica", "bold"); // نفس الخط الافتراضي للصفحة
-    pdf.setFontSize(18); // مقاس الخط مطابق أو قريب من الصفحة
-    pdf.setDrawColor(0, 0, 0); // إطار أسود
-    pdf.setFillColor(255, 255, 255); // خلفية بيضاء
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(16);
+    pdf.setDrawColor(0, 0, 0);
+    pdf.setFillColor(255, 255, 255);
     const textWidth = pdf.getTextWidth(title);
-    const paddingH = 8; // هوامش أفقية مناسبة
-    const paddingV = 4; // هوامش عمودية مناسبة
+    const paddingH = 8;
+    const paddingV = 3;
     const rectX = (pageWidth - textWidth) / 2 - paddingH;
-    const rectY = currentY - 6;
+    const rectY = currentY;
     const rectWidth = textWidth + 2 * paddingH;
-    const rectHeight = 12 + 2 * paddingV;
-    pdf.roundedRect(rectX, rectY, rectWidth, rectHeight, 12, 12, 'S');
-    pdf.text(title, pageWidth / 2, rectY + rectHeight / 2 + 2, { align: 'center' });
-    pdf.setTextColor(0, 0, 0);
-    currentY = rectY + rectHeight + 4;
+    const rectHeight = 10 + 2 * paddingV;
+    pdf.roundedRect(rectX, rectY, rectWidth, rectHeight, 10, 10, 'S');
+    pdf.text(title, pageWidth / 2, rectY + rectHeight / 2 + 1, { align: 'center' });
+    currentY = rectY + rectHeight + 6;
 
     // --- معلومات عامة ---
     const nomStructure = localStorage.getItem('nomStructure') || 'Structure inconnue';
