@@ -360,6 +360,7 @@ export default function TDA() {
     rounded-xl
     bg-white
     shadow-sm
+    mx-auto
   "
 >
   Simulateur de l&apos;état actuel
