@@ -31,7 +31,8 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
   const pageHeight = pdf.internal.pageSize.getHeight();
 
   // --- إعداد عرض الجداول وهامشها ---
-  const leftMargin = 20; // هامش ثابت فقط
+  const tableWidth = 90; // نصف الصفحة تقريباً
+  const leftMargin = (pageWidth - tableWidth) / 2;
 
   // --- التاريخ والتوقيت أعلى الصفحة على اليمين ---
   const dateTime = new Date().toLocaleString('fr-FR', {
@@ -100,7 +101,7 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
     // --- ملخص القاعات ---
     if (sallesSummary && sallesSummary.length > 0) {
       pdf.setFontSize(11);
-      pdf.text('Synthèse des salles', 14, tableStartY);
+      pdf.text('Synthèse des salles', leftMargin, tableStartY);
       tableStartY += 4;
 
       // حساب ارتفاع الجدول تقريبا
@@ -120,7 +121,8 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
         styles: { fontSize: 9, cellWidth: 'wrap', wordBreak: 'normal' },
         theme: 'grid',
         headStyles: { fillColor: [41, 128, 185] },
-        margin: { left: leftMargin, right: leftMargin }
+        margin: { left: leftMargin, right: leftMargin },
+        tableWidth: tableWidth // يحدد عرض الجدول الكلي
       });
       tableStartY = pdf.lastAutoTable.finalY + 10;
     } else {
@@ -130,7 +132,7 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
     // --- ملخص المتعلمين ---
     if (apprenantsSummary && apprenantsSummary.length > 0) {
       pdf.setFontSize(11);
-      pdf.text('Synthèse des apprenants', 14, tableStartY);
+      pdf.text('Synthèse des apprenants', leftMargin, tableStartY);
       const apprenantsHeader = ['Spécialité', 'Total gr.', 'Total appr.'];
       const apprenantsBody = apprenantsSummary.map(row => row.slice(0, 3));
       tableStartY += 4;
@@ -151,7 +153,8 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
         styles: { fontSize: 9, cellWidth: 'wrap', wordBreak: 'normal' },
         theme: 'grid',
         headStyles: { fillColor: [255, 165, 0] },
-        margin: { left: leftMargin, right: leftMargin }
+        margin: { left: leftMargin, right: leftMargin },
+        tableWidth: tableWidth
       });
       tableStartY = pdf.lastAutoTable.finalY + 10;
     } else {
@@ -161,7 +164,7 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
     // --- ملخص النتائج ---
     if (resultatsTable && resultatsTable.rows.length > 0) {
       pdf.setFontSize(11);
-      pdf.text('Synthèse des résultats', 14, tableStartY);
+      pdf.text('Synthèse des résultats', leftMargin, tableStartY);
       tableStartY += 4;
 
       // إزالة صف Résultat Global من الجدول
@@ -194,7 +197,8 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
         styles: { fontSize: 9, halign: 'center', valign: 'middle', cellWidth: 'wrap', wordBreak: 'normal' },
         theme: 'grid',
         headStyles: { fillColor: [155, 89, 182] },
-        margin: { left: leftMargin, right: leftMargin }
+        margin: { left: leftMargin, right: leftMargin },
+        tableWidth: tableWidth
       });
       tableStartY = pdf.lastAutoTable.finalY + 2; // تقليل المسافة بعد الجدول
 
