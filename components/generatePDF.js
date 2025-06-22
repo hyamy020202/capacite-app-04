@@ -62,23 +62,23 @@ export function generatePDF({ sallesSummary, apprenantsSummary, resultatsTable }
     );
     currentY += 13;
 
-    // --- إطار العنوان الرئيسي ---
-    const title = "Rapport de diagnostic de la capacité d'accueil";
-    const paddingH = 4; // هوامش أفقية أقل
-    const paddingV = 2; // هوامش عمودية أقل
-    pdf.setFontSize(13); // حجم خط أصغر
-    pdf.setDrawColor(0, 0, 0);         // إطار أسود
-    pdf.setFillColor(255, 255, 255);   // خلفية بيضاء (بدون لون)
+    // --- عنوان رئيسي مطابق للصفحة الرئيسية ---
+    const title = "Rapport de Diagnostic de la Capacité d'Accueil";
+    pdf.setFont("helvetica", "bold"); // نفس الخط الافتراضي للصفحة
+    pdf.setFontSize(18); // مقاس الخط مطابق أو قريب من الصفحة
+    pdf.setDrawColor(0, 0, 0); // إطار أسود
+    pdf.setFillColor(255, 255, 255); // خلفية بيضاء
     const textWidth = pdf.getTextWidth(title);
+    const paddingH = 8; // هوامش أفقية مناسبة
+    const paddingV = 4; // هوامش عمودية مناسبة
     const rectX = (pageWidth - textWidth) / 2 - paddingH;
-    const rectY = currentY - 10;
+    const rectY = currentY - 6;
     const rectWidth = textWidth + 2 * paddingH;
-    const rectHeight = 10 + 2 * paddingV;
-    pdf.roundedRect(rectX, rectY, rectWidth, rectHeight, 2, 2, 'S'); // 'S' = Stroke فقط (بدون تعبئة)
-    pdf.setTextColor(0, 0, 0);         // لون العنوان أسود
-    pdf.text(title, pageWidth / 2, currentY, { align: 'center' });
+    const rectHeight = 12 + 2 * paddingV;
+    pdf.roundedRect(rectX, rectY, rectWidth, rectHeight, 12, 12, 'S');
+    pdf.text(title, pageWidth / 2, rectY + rectHeight / 2 + 2, { align: 'center' });
     pdf.setTextColor(0, 0, 0);
-    currentY += 15;
+    currentY = rectY + rectHeight + 4;
 
     // --- معلومات عامة ---
     const nomStructure = localStorage.getItem('nomStructure') || 'Structure inconnue';
