@@ -107,8 +107,17 @@ export default function TableauResultats({ data, titre }) {
   return (
     <div className="bg-white shadow rounded-2xl p-4 mb-8 mx-1">
       <h2 className="text-xl font-bold text-gray-700 mb-2 text-center">{titre || "Résultats"}</h2>
-      <div className="table-responsive" style={{ width: "100%", overflowX: "auto", margin: "auto" }}>
-        <table className="table-compact">
+      <div
+        className="table-responsive"
+        style={{
+          width: "auto",         // كان 100%، الآن auto
+          overflowX: "auto",
+          margin: "auto",
+          display: "block",
+          maxWidth: "100%"      // حتى لا يخرج عن الصفحة في الشاشات الصغيرة
+        }}
+      >
+        <table className="table-compact" style={{ margin: "auto" }}>
           <thead>
             <tr>
               <th>Type</th>
