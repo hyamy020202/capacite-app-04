@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 
 const dependancesList = [
-  "Équipe de formateurs adéquate aux groupes et spécialités.",
-  "Certificat de prévention des risques de la Protection Civile.",
+  "Équipe de formateurs adéquate aux groupes et spécialités",
+  "Certificat de prévention des risques de la Protection Civil",
   "Voies de circulation et système de ventilation adéquats",
-  "Équipements nécessaires selon la spécificité des spécialités."
+  "Équipements nécessaires selon la spécificité des spécialités"
 ];
 
 export default function TableauDependances() {

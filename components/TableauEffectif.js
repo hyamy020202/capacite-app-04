@@ -41,9 +41,12 @@ export default function TableauEffectif({ titre, specialties = [], data, onDataC
 
   return (
     <div className="bg-white shadow rounded-2xl p-4 mb-8 flex-1 mx-1">
-      <h2 className="text-xl font-bold text-gray-700 mb-4 text-center">{titre}</h2>
-      <div className="table-responsive" style={{ width: "100%", overflowX: "auto" }}>
-        <table className="table-compact">
+      <h2 className="text-xl font-bold text-gray-700 mb-2 text-center">{titre}</h2>
+      <div
+        className="table-responsive"
+        style={{ width: "100%", overflowX: "auto", margin: "auto" }}
+      >
+        <table className="table-compact" style={{ margin: "auto" }}>
           <thead>
             <tr>
               <th>Spécialité</th>
