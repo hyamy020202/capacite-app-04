@@ -94,7 +94,14 @@ export default function TableauRepartition({ effectifData, specialties, onDataCh
   ]);
 
   return (
-    <div className="bg-white shadow rounded-2xl p-4 mb-8" style={{ width: "fit-content", margin: "auto" }}>
+    <div
+      className="bg-white shadow rounded-2xl mb-8"
+      style={{
+        width: "fit-content",
+        margin: "auto",
+        padding: "1rem 2rem" // هامش داخلي من كل الجهات حول الجدول
+      }}
+    >
       <h2 className="text-xl font-bold text-gray-700 mb-2 text-center">{titre || "Répartition"}</h2>
       <div className="table-responsive" style={{ width: "auto", overflowX: "auto", margin: "auto" }}>
         <table className="table-compact" style={{ margin: "auto" }}>
