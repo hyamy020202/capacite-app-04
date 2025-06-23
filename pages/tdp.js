@@ -445,10 +445,11 @@ export default function TDP() {
           {showResultats && (
             <TableauResultats titre={<span className="table-title">Résultat</span>} data={resultatsData} salles={salles} />
           )}
-          {showDependances && (
-            <TableauDependances />
-          )}
         </div>
+        {/* جدول الديبوندانس يظهر أسفل الجداول الثلاثة وليس بجانبها */}
+        {showDependances && (
+          <TableauDependances />
+        )}
       </div>
       <div className="tight-buttons flex flex-col md:flex-row flex-wrap justify-center">
         <button
