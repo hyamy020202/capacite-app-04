@@ -3,6 +3,7 @@ import TableauSalles from "../components/TableauSalles";
 import TableauEffectif from "../components/TableauEffectif";
 import TableauRepartition from "../components/TableauRepartition";
 import TableauResultats from "../components/TableauResultats";
+import TableauDependances from "../components/TableauDependances";
 import useSpecialties from "../components/useSpecialties";
 import { generatePDF } from "../components/generatePDF";
 import {
@@ -82,6 +83,7 @@ export default function TDA() {
   const [showEffectif, setShowEffectif] = useState(false);
   const [showRepartition, setShowRepartition] = useState(false);
   const [showResultats, setShowResultats] = useState(false);
+  const [showDependances, setShowDependances] = useState(false);
 
   const specialties = useSpecialties();
 
@@ -410,6 +412,15 @@ export default function TDA() {
               />
               Résultat
             </label>
+            <label className="flex items-center gap-1 text-xs">
+              <input
+                type="checkbox"
+                checked={showDependances}
+                onChange={() => setShowDependances(v => !v)}
+                className="accent-blue-500"
+              />
+              Dépendances
+            </label>
           </div>
         </div>
         <div className="tables-row">
@@ -434,6 +445,9 @@ export default function TDA() {
           )}
           {showResultats && (
             <TableauResultats titre={<span className="table-title">Résultat</span>} data={resultatsData} salles={salles} />
+          )}
+          {showDependances && (
+            <TableauDependances />
           )}
         </div>
       </div>

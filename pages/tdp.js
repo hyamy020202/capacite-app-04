@@ -3,6 +3,7 @@ import TableauSalles from "../components/TableauSalles";
 import TableauEffectifAjout from "../components/TableauEffectifAjout";
 import TableauRepartitionAjout from "../components/TableauRepartitionAjout";
 import TableauResultats from "../components/TableauResultats";
+import TableauDependances from "../components/TableauDependances";
 import useSpecialties from "../components/useSpecialties";
 import { generatePDF } from "../components/generatePDF";
 import {
@@ -87,6 +88,7 @@ export default function TDP() {
   const [showEffectif, setShowEffectif] = useState(false);
   const [showRepartition, setShowRepartition] = useState(false);
   const [showResultats, setShowResultats] = useState(false);
+  const [showDependances, setShowDependances] = useState(false);
   const specialties = useSpecialties();
 
   const totalHeuresTheo = somme(salles.theorie.map(s => Number(s.heuresMax) || 0));
@@ -408,6 +410,15 @@ export default function TDP() {
             />
             Résultat
           </label>
+          <label className="flex items-center gap-1 text-xs">
+            <input
+              type="checkbox"
+              checked={showDependances}
+              onChange={() => setShowDependances(v => !v)}
+              className="accent-blue-500"
+            />
+            Dépendances
+          </label>
         </div>
 
         <div className="tables-row">
@@ -433,6 +444,9 @@ export default function TDP() {
           )}
           {showResultats && (
             <TableauResultats titre={<span className="table-title">Résultat</span>} data={resultatsData} salles={salles} />
+          )}
+          {showDependances && (
+            <TableauDependances />
           )}
         </div>
       </div>
