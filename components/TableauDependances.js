@@ -11,10 +11,10 @@ export default function TableauDependances() {
   // 0: غير محدد، 1: ✓ أخضر، 2: ✗ أحمر
   const [choices, setChoices] = useState(Array(dependancesList.length).fill(0));
 
-  const handleChoice = (idx, value) => {
+  const handleSelect = (idx, value) => {
     setChoices(prev => {
       const arr = [...prev];
-      arr[idx] = arr[idx] === value ? 0 : value; // إلغاء التحديد إذا ضغط مرتين
+      arr[idx] = Number(value);
       return arr;
     });
   };
@@ -28,35 +28,27 @@ export default function TableauDependances() {
             <tr key={idx}>
               <td style={{ fontSize: "0.85rem" }}>{dep}</td>
               <td style={{ fontSize: "1.1rem", textAlign: "center" }}>
-                <button
-                  type="button"
-                  onClick={() => handleChoice(idx, 1)}
+                <select
+                  value={choices[idx]}
+                  onChange={e => handleSelect(idx, e.target.value)}
                   style={{
-                    color: choices[idx] === 1 ? "#16a34a" : "#bbb",
-                    background: "none",
-                    border: "none",
-                    fontSize: "1.2em",
-                    cursor: "pointer",
-                    marginRight: 8
+                    fontSize: "1.1em",
+                    padding: "2px 8px",
+                    borderRadius: 5,
+                    border: "1px solid #bbb",
+                    background: "#f9fafb",
+                    color:
+                      choices[idx] === 1
+                        ? "#16a34a"
+                        : choices[idx] === 2
+                        ? "#dc2626"
+                        : "#444",
                   }}
-                  aria-label="Valider"
                 >
-                  ✓
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleChoice(idx, 2)}
-                  style={{
-                    color: choices[idx] === 2 ? "#dc2626" : "#bbb",
-                    background: "none",
-                    border: "none",
-                    fontSize: "1.2em",
-                    cursor: "pointer"
-                  }}
-                  aria-label="Refuser"
-                >
-                  ✗
-                </button>
+                  <option value={0}>---</option>
+                  <option value={1} style={{ color: "#16a34a" }}>✓</option>
+                  <option value={2} style={{ color: "#dc2626" }}>✗</option>
+                </select>
               </td>
             </tr>
           ))}
