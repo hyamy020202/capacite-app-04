@@ -20,14 +20,34 @@ export default function TableauDependances() {
   };
 
   return (
-    <div className="bg-white shadow rounded-2xl p-4 mb-8 mx-1 table-responsive" style={{ minWidth: 220, width: "100%", maxWidth: 600 }}>
+    <div
+      className="bg-white shadow rounded-2xl p-4 mb-8 mx-1 table-responsive"
+      style={{
+        minWidth: 220,
+        maxWidth: 600,
+        marginLeft: "auto",
+        marginRight: "auto",
+        display: "block"
+      }}
+    >
       <h2 className="text-xl font-bold text-gray-700 mb-4 text-center table-title">Dépendances</h2>
-      <table className="table-compact" style={{ width: "100%", margin: "auto" }}>
+      <table
+        className="table-compact"
+        style={{
+          margin: "auto",
+          width: "auto",
+          tableLayout: "auto"
+        }}
+      >
+        <colgroup>
+          <col style={{ width: "1%" }} />
+          <col style={{ width: "1%" }} />
+        </colgroup>
         <tbody>
           {dependancesList.map((dep, idx) => (
             <tr key={idx}>
-              <td style={{ fontSize: "0.85rem" }}>{dep}</td>
-              <td style={{ fontSize: "1.1rem", textAlign: "center" }}>
+              <td style={{ fontSize: "0.85rem", whiteSpace: "nowrap" }}>{dep}</td>
+              <td style={{ fontSize: "1.1rem", textAlign: "center", whiteSpace: "nowrap" }}>
                 <select
                   value={choices[idx]}
                   onChange={e => handleSelect(idx, e.target.value)}
