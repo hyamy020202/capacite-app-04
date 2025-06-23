@@ -23,11 +23,12 @@ export default function TableauDependances() {
     <div
       className="bg-white shadow rounded-2xl p-4 mb-8 mx-1 table-responsive"
       style={{
-        minWidth: 220,
-        maxWidth: 600,
         marginLeft: "auto",
         marginRight: "auto",
-        display: "block"
+        display: "block",
+        width: "fit-content", // يجعل الحاوية على قدر الجدول
+        minWidth: 0,
+        maxWidth: "100%"
       }}
     >
       <h2 className="text-xl font-bold text-gray-700 mb-4 text-center table-title">Dépendances</h2>
@@ -40,8 +41,8 @@ export default function TableauDependances() {
         }}
       >
         <colgroup>
-          <col style={{ width: "1%" }} />
-          <col style={{ width: "1%" }} />
+          <col style={{ width: "auto", whiteSpace: "nowrap" }} />
+          <col style={{ width: "60px", whiteSpace: "nowrap" }} />
         </colgroup>
         <tbody>
           {dependancesList.map((dep, idx) => (
@@ -63,6 +64,7 @@ export default function TableauDependances() {
                         : choices[idx] === 2
                         ? "#dc2626"
                         : "#444",
+                    width: "48px"
                   }}
                 >
                   <option value={0}>---</option>
